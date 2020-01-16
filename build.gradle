@@ -28,6 +28,8 @@ dependencies {
 group = 'fr.just2craft.customcraft'
 version = '1.0.0'
 
+ext.website = "https://www.just2craft.fr"
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -43,6 +45,12 @@ sourceSets {
         resources {
             srcDir("src/main/resources")
         }
+    }
+}
+
+processResources {
+    filesMatching("**/plugin.yml") {
+        expand( project.properties )
     }
 }
 

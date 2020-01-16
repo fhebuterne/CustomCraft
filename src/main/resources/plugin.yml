@@ -1,0 +1,5 @@
+name: ${rootProject.name}
+version: ${version}
+main: fr.just2craft.customcraft.CustomCraft
+author: fabien91
+website: ${website}
