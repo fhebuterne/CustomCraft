@@ -1,4 +1,6 @@
 package fr.just2craft.customcraft;
 
-public class CustomCraft {
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class CustomCraft extends JavaPlugin {
 }
