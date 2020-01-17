@@ -1,5 +1,6 @@
-config:
-  test: "aaaa"
+customcraft:
+  ==: Config
+  test: Wesh alors
 
 
-test: "01010101"
+bonjour: "test"

@@ -15,9 +15,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 
 public class CustomCraft extends JavaPlugin {
-    static {
-        ConfigurationSerialization.registerClass(Config.class, "config");
-    }
 
     @Override
     public void onDisable() {
@@ -25,8 +22,10 @@ public class CustomCraft extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        ConfigurationSerialization.registerClass(Config.class, "config");
+
         saveDefaultConfig();
-        Config config = getConfig().getSerializable("config", Config.class);
+        Config config = getConfig().getObject("customcraft", Config.class);
         System.out.println(config);
 
         this.loadCustomRecipe();

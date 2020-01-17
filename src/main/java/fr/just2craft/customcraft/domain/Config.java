@@ -9,12 +9,21 @@ import java.util.Map;
 @SerializableAs("Config")
 public class Config implements ConfigurationSerializable {
     // TODO : WIP
-    public String test;
+    public String test = "Wesh alors";
+
+
 
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
         map.put("test", test);
         return map;
+    }
+
+    @Override
+    public String toString() {
+        return "Config{" +
+                "test='" + test + '\'' +
+                '}';
     }
 }
