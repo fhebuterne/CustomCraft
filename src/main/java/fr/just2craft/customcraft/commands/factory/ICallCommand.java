@@ -38,4 +38,6 @@ public interface ICallCommand {
              final String[] args);
 
     void setInstance(JavaPlugin instance);
+
+    void setPermission(String permission);
 }

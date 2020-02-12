@@ -10,14 +10,13 @@ public class CommandCreate extends CallCommand {
         super("create");
     }
 
-    @Override
-    public void run(Server server, String commandLabel, Command cmd, String[] args) {
+    protected void runFromOther(Server server, String commandLabel, Command cmd, String[] args) {
         this.instance.getServer().broadcastMessage("TEST broadcast from server");
         System.out.println("TEST command create server");
     }
 
     @Override
-    public void run(Server server, Player player, String commandLabel, Command cmd, String[] args) {
+    protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) {
         this.instance.getServer().broadcastMessage("TEST broadcast from player");
         System.out.println("TEST command create player");
     }

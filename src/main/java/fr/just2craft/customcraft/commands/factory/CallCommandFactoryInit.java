@@ -30,7 +30,7 @@ public class CallCommandFactoryInit {
                                         String commandPath,
                                         final String permissionPrefix,
                                         boolean loadWithArgs) {
-        // TODO : Add boolean to choose use baseCommand or not
+        // TODO : Add boolean to choose use baseCommand or not (ex: use /namePlugin command or just /command)
         if (!baseCommand.equalsIgnoreCase(commandLabel)) {
             return false;
         }
@@ -54,15 +54,12 @@ public class CallCommandFactoryInit {
 
         try {
             Class.forName(commandClassPath);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            // TODO : exception in log
-        }
+        } catch (ClassNotFoundException ignored) { }
 
-        ICallCommand cmd;
         try {
-            cmd = (ICallCommand) classLoader.loadClass(commandClassPath).newInstance();
+            ICallCommand cmd = (ICallCommand) classLoader.loadClass(commandClassPath).newInstance();
             cmd.setInstance(instance);
+            cmd.setPermission(permissionPrefix + commandName);
 
             if (!(cSender instanceof Player)) {
                 cmd.run(getServer(), commandLabel, command, args);
