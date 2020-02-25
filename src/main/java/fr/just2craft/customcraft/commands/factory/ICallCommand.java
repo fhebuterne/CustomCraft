@@ -23,7 +23,7 @@ public interface ICallCommand {
              final Player player,
              final String commandLabel,
              final Command cmd,
-             final String[] args);
+             final String[] args) throws Exception;
 
     /**
      * Other entities use this, like console, commandblocks...
@@ -35,7 +35,7 @@ public interface ICallCommand {
     void run(final Server server,
              final String commandLabel,
              final Command cmd,
-             final String[] args);
+             final String[] args) throws Exception;
 
     void setInstance(JavaPlugin instance);
 

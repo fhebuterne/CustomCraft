@@ -4,11 +4,11 @@ import fr.just2craft.customcraft.commands.factory.CallCommandFactoryInit;
 import fr.just2craft.customcraft.domain.Config;
 import fr.just2craft.customcraft.domain.ShapedRecipeConfig;
 import fr.just2craft.customcraft.listeners.CraftItemEventListener;
+import fr.just2craft.customcraft.listeners.InventoryClickEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class CustomCraft extends JavaPlugin {
-
     private CallCommandFactoryInit callCommandFactoryInit;
 
     @Override
@@ -33,6 +32,7 @@ public class CustomCraft extends JavaPlugin {
         saveDefaultConfig();
         this.loadCustomRecipe();
         Bukkit.getServer().getPluginManager().registerEvents(new CraftItemEventListener(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClickEventListener(), this);
     }
 
     @Override
@@ -64,9 +64,9 @@ public class CustomCraft extends JavaPlugin {
         ShapedRecipeConfig shapedRecipeConfig = new ShapedRecipeConfig();
         shapedRecipeConfig.setItemToCraft(itemStack);
         shapedRecipeConfig.setGrid(Arrays.asList(" E ", " E ", " S "));
-        HashMap<Character, Material> gridHashMap = new HashMap<>();
-        gridHashMap.put('E', Material.EMERALD);
-        gridHashMap.put('S', Material.STICK);
+        HashMap<Character, String> gridHashMap = new HashMap<>();
+        gridHashMap.put('E', Material.EMERALD.toString());
+        gridHashMap.put('S', Material.STICK.toString());
         shapedRecipeConfig.setGridSequence(gridHashMap);
 
         Config customcraft = getConfig().getSerializable("customcraft", Config.class);

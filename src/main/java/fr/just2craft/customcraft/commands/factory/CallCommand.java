@@ -37,7 +37,7 @@ public abstract class CallCommand implements ICallCommand {
                     final Player player,
                     final String commandLabel,
                     final Command cmd,
-                    final String[] args) {
+                    final String[] args) throws Exception {
         if (!player.hasPermission(permission)) {
             player.sendMessage("§cVous n'avez pas la permission d'utiliser cette commande !");
             return;
@@ -49,7 +49,7 @@ public abstract class CallCommand implements ICallCommand {
                     final Player player,
                     final String commandLabel,
                     final Command cmd,
-                    final String[] args) {
+                    final String[] args) throws Exception {
 
     }
 
@@ -57,14 +57,14 @@ public abstract class CallCommand implements ICallCommand {
     public void run(final Server server,
              final String commandLabel,
              final Command cmd,
-             final String[] args) {
+             final String[] args) throws Exception {
         runFromOther(server, commandLabel, cmd, args);
     }
 
     protected void runFromOther(final Server server,
                                  final String commandLabel,
                                  final Command cmd,
-                                 final String[] args) {
+                                 final String[] args) throws Exception {
 
     }
 

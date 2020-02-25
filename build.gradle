@@ -37,6 +37,10 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+tasks.withType(Jar) {
+    destinationDirectory = file(System.getProperty("outputDir") ?: "$rootDir/build/")
+}
+
 sourceSets {
     main {
         java {

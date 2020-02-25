@@ -1,6 +1,5 @@
 package fr.just2craft.customcraft.domain;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,7 +11,7 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
 
     private ItemStack itemToCraft;
     private List<String> grid;
-    private HashMap<Character, Material> gridSequence;
+    private HashMap<Character, String> gridSequence;
 
     public ItemStack getItemToCraft() {
         return itemToCraft;
@@ -30,11 +29,11 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
         this.grid = grid;
     }
 
-    public HashMap<Character, Material> getGridSequence() {
+    public HashMap<Character, String> getGridSequence() {
         return gridSequence;
     }
 
-    public void setGridSequence(HashMap<Character, Material> gridSequence) {
+    public void setGridSequence(HashMap<Character, String> gridSequence) {
         this.gridSequence = gridSequence;
     }
 

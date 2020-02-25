@@ -53,10 +53,6 @@ public class CallCommandFactoryInit {
         String commandClassPath = commandPath + ".Command" + commandName;
 
         try {
-            Class.forName(commandClassPath);
-        } catch (ClassNotFoundException ignored) { }
-
-        try {
             ICallCommand cmd = (ICallCommand) classLoader.loadClass(commandClassPath).newInstance();
             cmd.setInstance(instance);
             cmd.setPermission(permissionPrefix + commandName);
@@ -68,10 +64,7 @@ public class CallCommandFactoryInit {
             }
 
             return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            // TODO : show error with logger
-        }
+        } catch (Exception ignored) { }
 
         return false;
     }
