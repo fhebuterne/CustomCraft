@@ -5,8 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import static fr.just2craft.customcraft.commands.CommandCreate.CRAFT_CASES;
-import static fr.just2craft.customcraft.commands.CommandCreate.QUIT_INVENTORY_CASE;
+import static fr.just2craft.customcraft.commands.CommandCreate.*;
 
 public class InventoryClickEventListener implements Listener {
 
@@ -26,6 +25,10 @@ public class InventoryClickEventListener implements Listener {
 
         if (e.getSlot() == QUIT_INVENTORY_CASE) {
             e.getView().close();
+        }
+
+        if (e.getSlot() == VALID_INVENTORY_CASE) {
+            // TODO : Add new recipe with block placed in inv
         }
     }
 

@@ -29,7 +29,6 @@ public class CommandCreate extends CallCommand {
         throw new OnlyPlayerCommandException(server.getConsoleSender());
     }
 
-    @Override
     protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) {
         // TODO : Add an other line to edit some options like block place etc...
         Inventory inventory = Bukkit.createInventory(
