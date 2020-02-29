@@ -23,6 +23,11 @@ public abstract class CallCommand implements ICallCommand {
     }
 
     @Override
+    public JavaPlugin getInstance() {
+        return instance;
+    }
+
+    @Override
     public void setPermission(final String permission) {
         this.permission = permission;
     }

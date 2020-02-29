@@ -32,7 +32,11 @@ public class CommandCreate extends CallCommand {
     @Override
     protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) {
         // TODO : Add an other line to edit some options like block place etc...
-        Inventory inventory = Bukkit.createInventory(player, InventoryType.CHEST, this.instance.getName());
+        Inventory inventory = Bukkit.createInventory(
+                player,
+                InventoryType.CHEST,
+                this.getInstance().getName()
+        );
 
         ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta itemMeta = itemStack.getItemMeta();

@@ -39,5 +39,7 @@ public interface ICallCommand {
 
     void setInstance(JavaPlugin instance);
 
+    JavaPlugin getInstance();
+
     void setPermission(String permission);
 }
