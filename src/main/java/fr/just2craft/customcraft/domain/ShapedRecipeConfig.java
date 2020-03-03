@@ -11,7 +11,7 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
 
     private ItemStack itemToCraft;
     private List<String> grid;
-    private HashMap<Character, String> gridSequence;
+    private HashMap<Integer, ItemStack> gridSequence;
 
     public ItemStack getItemToCraft() {
         return itemToCraft;
@@ -29,11 +29,11 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
         this.grid = grid;
     }
 
-    public HashMap<Character, String> getGridSequence() {
+    public HashMap<Integer, ItemStack> getGridSequence() {
         return gridSequence;
     }
 
-    public void setGridSequence(HashMap<Character, String> gridSequence) {
+    public void setGridSequence(HashMap<Integer, ItemStack> gridSequence) {
         this.gridSequence = gridSequence;
     }
 

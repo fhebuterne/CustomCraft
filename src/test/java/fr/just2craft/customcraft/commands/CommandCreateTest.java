@@ -53,7 +53,7 @@ public class CommandCreateTest {
         given(Bukkit.createInventory(any(), any(), any())).willReturn(inventoryMock);
 
         // When
-        commandCreate.runFromPlayer(serverMock, playerMock, "create", commandMock, null);
+        commandCreate.runFromPlayer(serverMock, playerMock, "create", commandMock, new String[]{"create", "craftNameArgOne"});
 
         // Then
         verify(inventoryMock, times(19)).setItem(anyInt(), any());

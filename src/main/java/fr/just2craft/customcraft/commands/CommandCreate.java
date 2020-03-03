@@ -17,7 +17,8 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class CommandCreate extends CallCommand {
-    public final static ArrayList<Integer> CRAFT_CASES = new ArrayList<>(Arrays.asList(1, 2, 3, 10, 11, 12, 15, 19, 20, 21));
+    public final static ArrayList<Integer> CRAFT_CASES = new ArrayList<>(Arrays.asList(1, 2, 3, 10, 11, 12, 19, 20, 21));
+    public final static Integer RESULT_CRAFT_CASE = 15;
     public final static Integer QUIT_INVENTORY_CASE = 8;
     public final static Integer VALID_INVENTORY_CASE = 26;
 
@@ -31,6 +32,8 @@ public class CommandCreate extends CallCommand {
 
     protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) {
         // TODO : Add an other line to edit some options like block place etc...
+        // TODO : Check Craft name args 1 ... Required and control lenght
+
         Inventory inventory = Bukkit.createInventory(
                 player,
                 InventoryType.CHEST,
@@ -40,12 +43,12 @@ public class CommandCreate extends CallCommand {
         ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(" ");
+            itemMeta.setDisplayName(args[1]);
         }
         itemStack.setItemMeta(itemMeta);
 
         IntStream.range(0, InventoryType.CHEST.getDefaultSize())
-                .filter(value -> !CRAFT_CASES.contains(value))
+                .filter(value -> !CRAFT_CASES.contains(value) && RESULT_CRAFT_CASE != value)
                 .forEach(value -> inventory.setItem(value, itemStack));
 
         inventory.setItem(QUIT_INVENTORY_CASE, new ItemStack(Material.RED_STAINED_GLASS_PANE));

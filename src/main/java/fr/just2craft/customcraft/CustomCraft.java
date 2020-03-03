@@ -2,21 +2,13 @@ package fr.just2craft.customcraft;
 
 import fr.just2craft.customcraft.commands.factory.CallCommandFactoryInit;
 import fr.just2craft.customcraft.domain.Config;
-import fr.just2craft.customcraft.domain.ShapedRecipeConfig;
 import fr.just2craft.customcraft.listeners.CraftItemEventListener;
 import fr.just2craft.customcraft.listeners.InventoryClickEventListener;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class CustomCraft extends JavaPlugin {
     private CallCommandFactoryInit callCommandFactoryInit;
@@ -32,7 +24,7 @@ public class CustomCraft extends JavaPlugin {
         saveDefaultConfig();
         this.loadCustomRecipe();
         Bukkit.getServer().getPluginManager().registerEvents(new CraftItemEventListener(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClickEventListener(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClickEventListener(this), this);
     }
 
     @Override
@@ -53,20 +45,20 @@ public class CustomCraft extends JavaPlugin {
     }
 
     private void loadCustomRecipe() {
-        ItemStack itemStack = new ItemStack(Material.APPLE);
+        /*ItemStack itemStack = new ItemStack(Material.APPLE);
         itemStack.setAmount(2);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(this, "customcraft"), itemStack);
 
-        shapedRecipe.shape(" E ", " E ", " S ");
-        shapedRecipe.setIngredient('E', Material.EMERALD);
-        shapedRecipe.setIngredient('S', Material.STICK);
+        shapedRecipe.shape(" 0 ", " 0 ", " 1 ");
+        shapedRecipe.setIngredient('0', Material.EMERALD);
+        shapedRecipe.setIngredient('1', Material.STICK);
 
         ShapedRecipeConfig shapedRecipeConfig = new ShapedRecipeConfig();
         shapedRecipeConfig.setItemToCraft(itemStack);
-        shapedRecipeConfig.setGrid(Arrays.asList(" E ", " E ", " S "));
-        HashMap<Character, String> gridHashMap = new HashMap<>();
-        gridHashMap.put('E', Material.EMERALD.toString());
-        gridHashMap.put('S', Material.STICK.toString());
+        shapedRecipeConfig.setGrid(Arrays.asList(" 0 ", " 0 ", " 1 "));
+        HashMap<Integer, ItemStack> gridHashMap = new HashMap<>();
+        gridHashMap.put(0, new ItemStack(Material.EMERALD));
+        gridHashMap.put(1, new ItemStack(Material.STICK));
         shapedRecipeConfig.setGridSequence(gridHashMap);
 
         Config customcraft = getConfig().getSerializable("customcraft", Config.class);
@@ -79,7 +71,7 @@ public class CustomCraft extends JavaPlugin {
         getConfig().set("customcraft", customcraft);
         saveConfig();
 
-        this.getServer().addRecipe(shapedRecipe);
+        this.getServer().addRecipe(shapedRecipe);*/
     }
 
 }
