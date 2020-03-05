@@ -9,9 +9,18 @@ import java.util.Map;
 
 public class ShapedRecipeConfig implements ConfigurationSerializable {
 
+    private String craftName;
     private ItemStack itemToCraft;
     private List<String> grid;
     private HashMap<Integer, ItemStack> gridSequence;
+
+    public String getCraftName() {
+        return craftName;
+    }
+
+    public void setCraftName(String craftName) {
+        this.craftName = craftName;
+    }
 
     public ItemStack getItemToCraft() {
         return itemToCraft;
@@ -40,6 +49,7 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
+        map.put("craftName", craftName);
         map.put("itemToCraft", itemToCraft);
         map.put("grid", grid);
         map.put("gridSequence", gridSequence);
@@ -49,7 +59,8 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
     @Override
     public String toString() {
         return "ShapedRecipeConfig{" +
-                "itemToCraft=" + itemToCraft +
+                "craftName=" + craftName +
+                ", itemToCraft=" + itemToCraft +
                 ", grid=" + grid +
                 ", gridSequence=" + gridSequence +
                 '}';

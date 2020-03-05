@@ -7,9 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RecipeService {
@@ -17,24 +15,14 @@ public class RecipeService {
     // TODO : Use dependency injection for customcraft instance ?
     private CustomCraft customCraft;
 
-    private ArrayList<ItemStack> craftCaseRecipe;
-    private final HashMap<Integer, ItemStack> idCraftCaseRecipse;
-    private final ItemStack resultCraft;
-    private final String craftName;
-
-    public RecipeService(CustomCraft customCraft,
-                         ArrayList<ItemStack> craftCaseRecipe,
-                         HashMap<Integer, ItemStack> idCraftCaseRecipse,
-                         ItemStack resultCraft,
-                         String craftName) {
+    public RecipeService(CustomCraft customCraft) {
         this.customCraft = customCraft;
-        this.craftCaseRecipe = craftCaseRecipe;
-        this.idCraftCaseRecipse = idCraftCaseRecipse;
-        this.resultCraft = resultCraft;
-        this.craftName = craftName;
     }
 
-    public void addNewRecipe() {
+    public void addNewRecipe(ArrayList<ItemStack> craftCaseRecipe,
+                             HashMap<Integer, ItemStack> idCraftCaseRecipse,
+                             ItemStack resultCraft,
+                             String craftName) {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(this.customCraft, craftName), resultCraft);
 
         ArrayList<String> grid = getGrid(craftCaseRecipe, idCraftCaseRecipse);
@@ -89,6 +77,31 @@ public class RecipeService {
         String[] splitCompleteRow = completeRow.split("(?<=\\G...)");
 
         return new ArrayList<>(Arrays.asList(splitCompleteRow));
+    }
+
+    public void loadCustomRecipe() {
+        Config customcraft = this.customCraft.getConfig().getSerializable("customcraft", Config.class);
+
+        if (customcraft == null) {
+            return;
+        }
+
+        System.out.println(customcraft);
+
+        customcraft.getShapedRecipes()
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(shapedRecipeConfig -> {
+                    System.out.println(shapedRecipeConfig);
+
+                    ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(this.customCraft, shapedRecipeConfig.getCraftName()), shapedRecipeConfig.getItemToCraft());
+                    List<String> grid = shapedRecipeConfig.getGrid();
+                    shapedRecipe.shape(grid.get(0), grid.get(1), grid.get(2));
+                    shapedRecipeConfig.getGridSequence().forEach(
+                            (integer, itemStack) -> shapedRecipe.setIngredient(integer.toString().charAt(0), new RecipeChoice.ExactChoice(itemStack))
+                    );
+                    this.customCraft.getServer().addRecipe(shapedRecipe);
+                });
     }
 
 }

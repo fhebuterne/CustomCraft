@@ -10,6 +10,15 @@ import java.util.Map;
 public class Config implements ConfigurationSerializable {
 
     private List<ShapedRecipeConfig> shapedRecipes = new ArrayList<>();
+    private String testVar;
+
+    public String getTestVar() {
+        return testVar;
+    }
+
+    public void setTestVar(String testVar) {
+        this.testVar = testVar;
+    }
 
     public List<ShapedRecipeConfig> getShapedRecipes() {
         return shapedRecipes;
@@ -26,6 +35,7 @@ public class Config implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
+        map.put("testVar", testVar);
         map.put("shapedRecipes", shapedRecipes);
         return map;
     }
@@ -43,6 +53,7 @@ public class Config implements ConfigurationSerializable {
     public String toString() {
         return "Config{" +
                 "shapedRecipes='" + shapedRecipes + '\'' +
+                ", testVar='" + testVar + '\'' +
                 '}';
     }
 
