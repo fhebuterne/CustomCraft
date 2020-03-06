@@ -5,7 +5,7 @@ import fr.just2craft.customcraft.domain.Config;
 import fr.just2craft.customcraft.domain.RecipeService;
 import fr.just2craft.customcraft.domain.ShapedRecipeConfig;
 import fr.just2craft.customcraft.listeners.InventoryClickEventListener;
-import org.bukkit.Bukkit;
+import fr.just2craft.customcraft.listeners.PlayerInteractEventListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -29,7 +29,8 @@ public class CustomCraft extends JavaPlugin {
         this.callCommandFactoryInit = new CallCommandFactoryInit(this, "customcraft");
         saveDefaultConfig();
         new RecipeService(this).loadCustomRecipe();
-        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClickEventListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new InventoryClickEventListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(this), this);
     }
 
     @Override
