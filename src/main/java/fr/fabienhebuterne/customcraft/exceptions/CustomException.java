@@ -1,4 +1,4 @@
-package fr.just2craft.customcraft.exceptions;
+package fr.fabienhebuterne.customcraft.exceptions;
 
 public abstract class CustomException extends Exception {
 }

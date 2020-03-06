@@ -1,10 +1,9 @@
-package fr.just2craft.customcraft.commands;
+package fr.fabienhebuterne.customcraft.commands;
 
-import fr.just2craft.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.CustomCraft;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFactory;
@@ -19,6 +18,8 @@ import java.util.logging.Logger;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+
+//import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class CommandCreateTest {
@@ -41,7 +42,7 @@ public class CommandCreateTest {
         CustomCraft customCraft = mock(CustomCraft.class);
 
         // Mock ItemMeta
-        ItemFactory itemFactory = mock(CraftItemFactory.class);
+        ItemFactory itemFactory = mock(ItemFactory.class);
         given(Bukkit.getItemFactory()).willReturn(itemFactory);
         given(itemFactory.getItemMeta(any())).willReturn(mock(ItemMeta.class));
 

@@ -1,42 +1,31 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.4.0"
-    }
-}
-
 apply plugin: 'base'
 apply plugin: 'java'
-apply plugin: "com.jfrog.artifactory"
-
-/*configurations.all {
-    transitive = false
-}*/
 
 repositories {
     mavenCentral()
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
-    compile(group: 'org.spigotmc', name: 'spigot-1.13', version: '1.13.2-R0.1-SNAPSHOT')
-    compile(group: 'org.spigotmc', name: 'spigot-1.14', version: '1.14.4-R0.1-SNAPSHOT')
-    compile(group: 'org.spigotmc', name: 'spigot-1.15', version: '1.15.1-R0.1-SNAPSHOT')
-    testImplementation "org.mockito:mockito-core:3.3.0"
-    testImplementation "org.mockito:mockito-junit-jupiter:3.3.0"
-    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.6.0')
+    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+    compileOnly 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
+    testCompileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+    testCompileOnly 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
+    testImplementation 'org.mockito:mockito-core:3.3.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.3.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
 }
 
 test {
     useJUnitPlatform()
 }
 
-group = 'fr.just2craft.customcraft'
+group = 'fr.fabienhebuterne.customcraft'
 version = '1.0.0'
 
-ext.website = "https://www.just2craft.fr"
+ext.website = "https://fabien-hebuterne.fr/"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -61,40 +50,8 @@ sourceSets {
 }
 
 processResources {
-    filesMatching("**/plugin.yml") {
-        expand( project.properties )
-    }
-}
-
-artifactory {
-    contextUrl = "https://artifactory.improbable-game.fr/artifactory/"   //The base Artifactory URL if not overridden by the publisher/resolver
-    publish {
-        repository {
-            repoKey = 'libs-release-local'
-            username = "${artifactory_ig_user}"
-            password = "${artifactory_ig_password}"
-            maven = true
-        }
-        repository {
-            repoKey = 'libs-snapshot-local'
-            username = "${artifactory_ig_user}"
-            password = "${artifactory_ig_password}"
-            maven = true
-        }
-    }
-    resolve {
-        repository {
-            repoKey = 'libs-release'
-            username = "${artifactory_ig_user}"
-            password = "${artifactory_ig_password}"
-            maven = true
-        }
-        repository {
-            repoKey = 'libs-snapshot'
-            username = "${artifactory_ig_user}"
-            password = "${artifactory_ig_password}"
-            maven = true
-
-        }
+    filesMatching("**/**.yml") {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        expand(project.properties)
     }
 }

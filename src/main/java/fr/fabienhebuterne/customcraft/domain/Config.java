@@ -1,4 +1,4 @@
-package fr.just2craft.customcraft.domain;
+package fr.fabienhebuterne.customcraft.domain;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 

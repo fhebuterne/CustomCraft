@@ -1,4 +1,4 @@
-package fr.just2craft.customcraft.utils;
+package fr.fabienhebuterne.customcraft.utils;
 
 import java.util.List;
 import java.util.Map;

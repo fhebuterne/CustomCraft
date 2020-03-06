@@ -1,4 +1,4 @@
-package fr.just2craft.customcraft.commands.factory;
+package fr.fabienhebuterne.customcraft.commands.factory;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

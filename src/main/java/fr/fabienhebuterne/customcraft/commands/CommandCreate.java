@@ -1,7 +1,7 @@
-package fr.just2craft.customcraft.commands;
+package fr.fabienhebuterne.customcraft.commands;
 
-import fr.just2craft.customcraft.commands.factory.CallCommand;
-import fr.just2craft.customcraft.exceptions.OnlyPlayerCommandException;
+import fr.fabienhebuterne.customcraft.commands.factory.CallCommand;
+import fr.fabienhebuterne.customcraft.exceptions.OnlyPlayerCommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;

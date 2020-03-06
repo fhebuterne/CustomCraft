@@ -1,7 +1,7 @@
-package fr.just2craft.customcraft.domain;
+package fr.fabienhebuterne.customcraft.domain;
 
-import fr.just2craft.customcraft.CustomCraft;
-import fr.just2craft.customcraft.utils.ListUtils;
+import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.utils.ListUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;

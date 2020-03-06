@@ -1,8 +1,8 @@
-package fr.just2craft.customcraft.listeners;
+package fr.fabienhebuterne.customcraft.listeners;
 
-import fr.just2craft.customcraft.CustomCraft;
-import fr.just2craft.customcraft.domain.Config;
-import fr.just2craft.customcraft.domain.ShapedRecipeConfig;
+import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.domain.Config;
+import fr.fabienhebuterne.customcraft.domain.ShapedRecipeConfig;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;

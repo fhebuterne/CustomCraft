@@ -1,7 +1,7 @@
-package fr.just2craft.customcraft.listeners;
+package fr.fabienhebuterne.customcraft.listeners;
 
-import fr.just2craft.customcraft.CustomCraft;
-import fr.just2craft.customcraft.domain.RecipeService;
+import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.domain.RecipeService;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static fr.just2craft.customcraft.commands.CommandCreate.*;
+import static fr.fabienhebuterne.customcraft.commands.CommandCreate.*;
 
 public class InventoryClickEventListener implements Listener {
 
