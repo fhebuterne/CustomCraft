@@ -56,6 +56,15 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
         return map;
     }
 
+    public static ShapedRecipeConfig deserialize(Map<String, Object> map) {
+        ShapedRecipeConfig shapedRecipeConfig = new ShapedRecipeConfig();
+        shapedRecipeConfig.craftName = (String) map.get("craftName");
+        shapedRecipeConfig.itemToCraft = (ItemStack) map.get("itemToCraft");
+        shapedRecipeConfig.grid = (List<String>) map.get("grid");
+        shapedRecipeConfig.gridSequence = (HashMap<Integer, ItemStack>) map.get("gridSequence");
+        return shapedRecipeConfig;
+    }
+
     @Override
     public String toString() {
         return "ShapedRecipeConfig{" +

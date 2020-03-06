@@ -86,19 +86,21 @@ public class RecipeService {
             return;
         }
 
-        System.out.println(customcraft);
-
         customcraft.getShapedRecipes()
                 .stream()
                 .filter(Objects::nonNull)
                 .forEach(shapedRecipeConfig -> {
-                    System.out.println(shapedRecipeConfig);
-
-                    ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(this.customCraft, shapedRecipeConfig.getCraftName()), shapedRecipeConfig.getItemToCraft());
+                    ShapedRecipe shapedRecipe = new ShapedRecipe(
+                            new NamespacedKey(this.customCraft, shapedRecipeConfig.getCraftName()),
+                            shapedRecipeConfig.getItemToCraft()
+                    );
                     List<String> grid = shapedRecipeConfig.getGrid();
                     shapedRecipe.shape(grid.get(0), grid.get(1), grid.get(2));
                     shapedRecipeConfig.getGridSequence().forEach(
-                            (integer, itemStack) -> shapedRecipe.setIngredient(integer.toString().charAt(0), new RecipeChoice.ExactChoice(itemStack))
+                            (integer, itemStack) -> shapedRecipe.setIngredient(
+                                    integer.toString().charAt(0),
+                                    new RecipeChoice.ExactChoice(itemStack)
+                            )
                     );
                     this.customCraft.getServer().addRecipe(shapedRecipe);
                 });
