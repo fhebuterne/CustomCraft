@@ -1,6 +1,7 @@
 package fr.fabienhebuterne.customcraft.commands;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.exceptions.BadArgumentsException;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -33,7 +34,7 @@ public class CommandCreateTest {
     }
 
     @Test
-    public void should_open_inventory_for_a_player() {
+    public void should_open_inventory_for_a_player() throws BadArgumentsException {
         // Given
         Player playerMock = mock(Player.class);
         Command commandMock = mock(Command.class);

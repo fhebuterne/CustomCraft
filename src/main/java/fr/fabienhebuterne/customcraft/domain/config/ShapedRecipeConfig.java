@@ -1,4 +1,4 @@
-package fr.fabienhebuterne.customcraft.domain;
+package fr.fabienhebuterne.customcraft.domain.config;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;

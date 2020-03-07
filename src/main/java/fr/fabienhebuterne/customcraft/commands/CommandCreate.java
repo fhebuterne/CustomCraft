@@ -1,6 +1,7 @@
 package fr.fabienhebuterne.customcraft.commands;
 
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommand;
+import fr.fabienhebuterne.customcraft.exceptions.BadArgumentsException;
 import fr.fabienhebuterne.customcraft.exceptions.OnlyPlayerCommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,9 +31,13 @@ public class CommandCreate extends CallCommand {
         throw new OnlyPlayerCommandException(server.getConsoleSender());
     }
 
-    protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) {
+    protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) throws BadArgumentsException {
         // TODO : Add an other line to edit some options like block place etc...
-        // TODO : Check Craft name args 1 ... Required and control lenght
+
+        // TODO : Check if craftName already exist
+        if (args.length == 1) {
+            throw new BadArgumentsException(player, "create <craftName>");
+        }
 
         Inventory inventory = Bukkit.createInventory(
                 player,

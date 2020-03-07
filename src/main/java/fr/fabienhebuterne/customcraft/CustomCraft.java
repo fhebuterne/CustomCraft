@@ -1,9 +1,10 @@
 package fr.fabienhebuterne.customcraft;
 
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommandFactoryInit;
-import fr.fabienhebuterne.customcraft.domain.Config;
 import fr.fabienhebuterne.customcraft.domain.RecipeService;
-import fr.fabienhebuterne.customcraft.domain.ShapedRecipeConfig;
+import fr.fabienhebuterne.customcraft.domain.config.Config;
+import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
+import fr.fabienhebuterne.customcraft.domain.config.ShapedRecipeConfig;
 import fr.fabienhebuterne.customcraft.listeners.InventoryClickEventListener;
 import fr.fabienhebuterne.customcraft.listeners.PlayerInteractEventListener;
 import org.bukkit.command.Command;
@@ -16,6 +17,7 @@ public class CustomCraft extends JavaPlugin {
     static {
         ConfigurationSerialization.registerClass(Config.class, "Config");
         ConfigurationSerialization.registerClass(ShapedRecipeConfig.class, "ShapedRecipeConfig");
+        ConfigurationSerialization.registerClass(OptionItemStackConfig.class, "OptionItemStackConfig");
     }
 
     private CallCommandFactoryInit callCommandFactoryInit;
@@ -26,6 +28,8 @@ public class CustomCraft extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // TODO : Add brigadier lib to implement command autocompletion in game
+
         this.callCommandFactoryInit = new CallCommandFactoryInit(this, "customcraft");
         saveDefaultConfig();
         new RecipeService(this).loadCustomRecipe();
@@ -44,7 +48,7 @@ public class CustomCraft extends JavaPlugin {
                 commandLabel,
                 args,
                 CustomCraft.class.getClassLoader(),
-                "fr.just2craft.customcraft.commands",
+                "fr.fabienhebuterne.customcraft.commands",
                 "customcraft.",
                 true
         );

@@ -1,6 +1,8 @@
 package fr.fabienhebuterne.customcraft.domain;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.domain.config.Config;
+import fr.fabienhebuterne.customcraft.domain.config.ShapedRecipeConfig;
 import fr.fabienhebuterne.customcraft.utils.ListUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +40,7 @@ public class RecipeService {
         ShapedRecipeConfig shapedRecipeConfig = new ShapedRecipeConfig();
         shapedRecipeConfig.setItemToCraft(resultCraft);
         shapedRecipeConfig.setGrid(grid);
+        shapedRecipeConfig.setCraftName(craftName);
 
         HashMap<Integer, ItemStack> gridHashMap = new HashMap<>();
         idCraftCaseRecipse.entrySet()
@@ -53,6 +56,12 @@ public class RecipeService {
         if (customcraft == null) {
             customcraft = new Config();
         }
+
+        // TODO : this is test
+        //OptionItemStackConfig optionItemStackConfig = new OptionItemStackConfig();
+        //optionItemStackConfig.setBlockCanBePlaced(false);
+        //customcraft.addOptionItemStackConfig(new ItemStack(Material.APPLE), optionItemStackConfig);
+        // -------
 
         customcraft.addShapedRecipe(shapedRecipeConfig);
         this.customCraft.getConfig().set("customcraft", customcraft);

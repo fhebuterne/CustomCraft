@@ -1,6 +1,6 @@
 name: ${rootProject.name}
 version: ${version}
-main: fr.just2craft.customcraft.CustomCraft
+main: fr.fabienhebuterne.customcraft.CustomCraft
 author: fabien91
 website: ${website}
 api-version: 1.13
