@@ -1,5 +1,6 @@
 package fr.fabienhebuterne.customcraft.domain.config;
 
+import fr.fabienhebuterne.customcraft.domain.RecipeType;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 
@@ -7,12 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShapedRecipeConfig implements ConfigurationSerializable {
+public class RecipeConfig implements ConfigurationSerializable {
 
     private String craftName;
     private ItemStack itemToCraft;
     private List<String> grid;
     private HashMap<Integer, ItemStack> gridSequence;
+    private String recipeType;
 
     public String getCraftName() {
         return craftName;
@@ -46,6 +48,14 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
         this.gridSequence = gridSequence;
     }
 
+    public RecipeType getRecipeType() {
+        return RecipeType.valueOf(recipeType);
+    }
+
+    public void setRecipeType(RecipeType recipeType) {
+        this.recipeType = recipeType.getNameType();
+    }
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
@@ -53,15 +63,17 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
         map.put("itemToCraft", itemToCraft);
         map.put("grid", grid);
         map.put("gridSequence", gridSequence);
+        map.put("recipeType", recipeType);
         return map;
     }
 
-    public static ShapedRecipeConfig deserialize(Map<String, Object> map) {
-        ShapedRecipeConfig shapedRecipeConfig = new ShapedRecipeConfig();
+    public static RecipeConfig deserialize(Map<String, Object> map) {
+        RecipeConfig shapedRecipeConfig = new RecipeConfig();
         shapedRecipeConfig.craftName = (String) map.get("craftName");
         shapedRecipeConfig.itemToCraft = (ItemStack) map.get("itemToCraft");
         shapedRecipeConfig.grid = (List<String>) map.get("grid");
         shapedRecipeConfig.gridSequence = (HashMap<Integer, ItemStack>) map.get("gridSequence");
+        shapedRecipeConfig.recipeType = (String) map.get("recipeType");
         return shapedRecipeConfig;
     }
 
@@ -72,6 +84,7 @@ public class ShapedRecipeConfig implements ConfigurationSerializable {
                 ", itemToCraft=" + itemToCraft +
                 ", grid=" + grid +
                 ", gridSequence=" + gridSequence +
+                ", recipeType=" + recipeType +
                 '}';
     }
 

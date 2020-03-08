@@ -39,7 +39,7 @@ public class PlayerInteractEventListener implements Listener {
         ItemStack itemInv = e.getItem().clone();
         itemInv.setAmount(1);
 
-        Optional<Map.Entry<ItemStack, OptionItemStackConfig>> first = config.getOptionItemStackConfig()
+        Optional<Map.Entry<ItemStack, OptionItemStackConfig>> first = config.getOptionItemStack()
                 .entrySet()
                 .stream()
                 .filter(itemStackOptionConfig -> {

@@ -4,7 +4,7 @@ import fr.fabienhebuterne.customcraft.commands.factory.CallCommandFactoryInit;
 import fr.fabienhebuterne.customcraft.domain.RecipeService;
 import fr.fabienhebuterne.customcraft.domain.config.Config;
 import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
-import fr.fabienhebuterne.customcraft.domain.config.ShapedRecipeConfig;
+import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
 import fr.fabienhebuterne.customcraft.listeners.InventoryClickEventListener;
 import fr.fabienhebuterne.customcraft.listeners.PlayerInteractEventListener;
 import org.bukkit.command.Command;
@@ -12,15 +12,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 public class CustomCraft extends JavaPlugin {
 
     static {
         ConfigurationSerialization.registerClass(Config.class, "Config");
-        ConfigurationSerialization.registerClass(ShapedRecipeConfig.class, "ShapedRecipeConfig");
+        ConfigurationSerialization.registerClass(RecipeConfig.class, "ShapedRecipeConfig");
         ConfigurationSerialization.registerClass(OptionItemStackConfig.class, "OptionItemStackConfig");
     }
 
     private CallCommandFactoryInit callCommandFactoryInit;
+
+    // Used between inventory navigation to keep data before validation
+    // TODO : Create object to stock tmp recipe and not only just craftName string ...
+    private HashMap<UUID, String> tmpData = new HashMap<>();
 
     @Override
     public void onDisable() {
@@ -54,4 +61,15 @@ public class CustomCraft extends JavaPlugin {
         );
     }
 
+    public HashMap<UUID, String> getTmpData() {
+        return tmpData;
+    }
+
+    public void addTmpData(UUID uuid, String craftName) {
+        tmpData.put(uuid, craftName);
+    }
+
+    public void removeTmpData(UUID uuid) {
+        tmpData.remove(uuid);
+    }
 }

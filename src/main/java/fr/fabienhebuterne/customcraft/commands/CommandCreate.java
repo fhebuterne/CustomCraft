@@ -1,21 +1,16 @@
 package fr.fabienhebuterne.customcraft.commands;
 
+import fr.fabienhebuterne.customcraft.CustomCraft;
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommand;
+import fr.fabienhebuterne.customcraft.domain.RecipeInventoryService;
 import fr.fabienhebuterne.customcraft.exceptions.BadArgumentsException;
 import fr.fabienhebuterne.customcraft.exceptions.OnlyPlayerCommandException;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
 public class CommandCreate extends CallCommand {
     public final static ArrayList<Integer> CRAFT_CASES = new ArrayList<>(Arrays.asList(1, 2, 3, 10, 11, 12, 19, 20, 21));
@@ -33,32 +28,16 @@ public class CommandCreate extends CallCommand {
 
     protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) throws BadArgumentsException {
         // TODO : Add an other line to edit some options like block place etc...
-
         // TODO : Check if craftName already exist
         if (args.length == 1) {
             throw new BadArgumentsException(player, "create <craftName>");
         }
 
-        Inventory inventory = Bukkit.createInventory(
-                player,
-                InventoryType.CHEST,
-                this.getInstance().getName()
-        );
+        CustomCraft customCraft = (CustomCraft) this.getInstance();
+        customCraft.addTmpData(player.getUniqueId(), args[1]);
 
-        ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta != null) {
-            itemMeta.setDisplayName(args[1]);
-        }
-        itemStack.setItemMeta(itemMeta);
-
-        IntStream.range(0, InventoryType.CHEST.getDefaultSize())
-                .filter(value -> !CRAFT_CASES.contains(value) && RESULT_CRAFT_CASE != value)
-                .forEach(value -> inventory.setItem(value, itemStack));
-
-        inventory.setItem(QUIT_INVENTORY_CASE, new ItemStack(Material.RED_STAINED_GLASS_PANE));
-        inventory.setItem(VALID_INVENTORY_CASE, new ItemStack(Material.GREEN_STAINED_GLASS_PANE));
-
-        player.openInventory(inventory);
+        new RecipeInventoryService(customCraft).openChooseCraftTypeInventory(player);
     }
+
+
 }

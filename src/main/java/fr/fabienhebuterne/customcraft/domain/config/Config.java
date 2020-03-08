@@ -10,54 +10,54 @@ import java.util.Map;
 
 public class Config implements ConfigurationSerializable {
 
-    private List<ShapedRecipeConfig> shapedRecipes = new ArrayList<>();
-    private HashMap<ItemStack, OptionItemStackConfig> optionItemStackConfig = new HashMap<>();
+    private List<RecipeConfig> recipes = new ArrayList<>();
+    private HashMap<ItemStack, OptionItemStackConfig> optionItemStack = new HashMap<>();
 
-    public List<ShapedRecipeConfig> getShapedRecipes() {
-        return shapedRecipes;
+    public List<RecipeConfig> getRecipes() {
+        return recipes;
     }
 
-    public void setShapedRecipes(List<ShapedRecipeConfig> shapedRecipes) {
-        this.shapedRecipes = shapedRecipes;
+    public void setRecipes(List<RecipeConfig> recipes) {
+        this.recipes = recipes;
     }
 
-    public void addShapedRecipe(ShapedRecipeConfig shapedRecipe) {
-        this.shapedRecipes.add(shapedRecipe);
+    public void addRecipe(RecipeConfig recipe) {
+        this.recipes.add(recipe);
     }
 
-    public HashMap<ItemStack, OptionItemStackConfig> getOptionItemStackConfig() {
-        return optionItemStackConfig;
+    public HashMap<ItemStack, OptionItemStackConfig> getOptionItemStack() {
+        return optionItemStack;
     }
 
-    public void setOptionItemStackConfig(HashMap<ItemStack, OptionItemStackConfig> optionItemStackConfig) {
-        this.optionItemStackConfig = optionItemStackConfig;
+    public void setOptionItemStack(HashMap<ItemStack, OptionItemStackConfig> optionItemStack) {
+        this.optionItemStack = optionItemStack;
     }
 
-    public void addOptionItemStackConfig(ItemStack itemStack, OptionItemStackConfig optionItemStackConfig) {
-        this.optionItemStackConfig.put(itemStack, optionItemStackConfig);
+    public void addOptionItemStack(ItemStack itemStack, OptionItemStackConfig optionItemStack) {
+        this.optionItemStack.put(itemStack, optionItemStack);
     }
 
 
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
-        map.put("shapedRecipes", shapedRecipes);
-        map.put("optionItemStackConfig", optionItemStackConfig);
+        map.put("recipes", recipes);
+        map.put("optionItemStack", optionItemStack);
         return map;
     }
 
     public static Config deserialize(Map<String, Object> map) {
         Config config = new Config();
-        config.shapedRecipes = (List<ShapedRecipeConfig>) map.get("shapedRecipes");
-        config.optionItemStackConfig = (HashMap<ItemStack, OptionItemStackConfig>) map.get("optionItemStackConfig");
+        config.recipes = (List<RecipeConfig>) map.get("recipes");
+        config.optionItemStack = (HashMap<ItemStack, OptionItemStackConfig>) map.get("optionItemStack");
         return config;
     }
 
     @Override
     public String toString() {
         return "Config{" +
-                "shapedRecipes='" + shapedRecipes + '\'' +
-                ", optionItemStackConfig='" + optionItemStackConfig + '\'' +
+                "recipes='" + recipes + '\'' +
+                ", optionItemStack='" + optionItemStack + '\'' +
                 '}';
     }
 

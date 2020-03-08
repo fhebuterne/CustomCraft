@@ -1,7 +1,10 @@
 package fr.fabienhebuterne.customcraft.listeners;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.domain.RecipeInventoryService;
 import fr.fabienhebuterne.customcraft.domain.RecipeService;
+import fr.fabienhebuterne.customcraft.domain.RecipeType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -25,14 +28,47 @@ public class InventoryClickEventListener implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent e) {
-        if (!e.getView().getTitle().contains("CustomCraft")) {
+        this.chooseCraftType(e);
+        this.createCraftFromShapedOrShapelessRecipe(e);
+    }
+
+    private void chooseCraftType(InventoryClickEvent e) {
+        if (!e.getView().getTitle().contentEquals("CustomCraft - Recipe type")) {
             return;
         }
 
-        this.createCommand(e);
+        boolean invClick = e.getClickedInventory() != null && e.getClickedInventory().getType() == InventoryType.CHEST;
+
+        if (invClick) {
+            e.setCancelled(true);
+        }
+
+        Player player = (Player) e.getView().getPlayer();
+
+        if (e.getSlot() == RecipeType.SHAPED_RECIPE.getInvIndex()) {
+            new RecipeInventoryService(customCraft).openCreateCraftShapedOrShapelessRecipeInventory(
+                    player,
+                    RecipeType.SHAPED_RECIPE
+            );
+        }
+
+        if (e.getSlot() == RecipeType.SHAPELESS_RECIPE.getInvIndex()) {
+            new RecipeInventoryService(customCraft).openCreateCraftShapedOrShapelessRecipeInventory(
+                    player,
+                    RecipeType.SHAPELESS_RECIPE
+            );
+        }
     }
 
-    private void createCommand(InventoryClickEvent e) {
+    private void createCraftFromShapedOrShapelessRecipe(InventoryClickEvent e) {
+        if (!e.getView().getTitle().contains("CustomCraft - ") ||
+                e.getView().getTitle().contentEquals("CustomCraft - Recipe type")) {
+            return;
+        }
+
+        // TODO : Refactoring with tmpData variable and stop to use title to keep data ...
+        RecipeType recipeType = RecipeType.valueOf(e.getView().getTitle().split("CustomCraft - ")[1]);
+
         boolean invCases = !CRAFT_CASES.contains(e.getSlot()) && RESULT_CRAFT_CASE != e.getSlot();
         boolean invClick = e.getClickedInventory() != null && e.getClickedInventory().getType() == InventoryType.CHEST;
 
@@ -70,9 +106,30 @@ public class InventoryClickEventListener implements Listener {
                 return;
             }
 
-            String craftName = e.getInventory().getItem(0).getItemMeta().getDisplayName();
+            Player player = (Player) e.getView().getPlayer();
 
-            new RecipeService(this.customCraft).addNewRecipe(craftCaseRecipe, idCraftCaseRecipse, resultCraft, craftName);
+            String craftName = customCraft.getTmpData().get(player.getUniqueId());
+
+            if (recipeType == RecipeType.SHAPED_RECIPE) {
+                new RecipeService(this.customCraft).addShapedRecipe(
+                        player,
+                        craftCaseRecipe,
+                        idCraftCaseRecipse,
+                        resultCraft,
+                        craftName,
+                        recipeType
+                );
+            } else {
+                new RecipeService(this.customCraft).addShapelessRecipe(
+                        player,
+                        craftCaseRecipe,
+                        idCraftCaseRecipse,
+                        resultCraft,
+                        craftName,
+                        recipeType
+                );
+            }
+
         }
     }
 

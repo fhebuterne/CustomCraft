@@ -50,13 +50,13 @@ public class CommandCreateTest {
         given(customCraft.getName()).willReturn("CustomCraft");
 
         Inventory inventoryMock = mock(Inventory.class);
-        given(Bukkit.createInventory(any(), any(), any())).willReturn(inventoryMock);
+        given(Bukkit.createInventory(playerMock, 9, "CustomCraft - Recipe type")).willReturn(inventoryMock);
 
         // When
         commandCreate.runFromPlayer(serverMock, playerMock, "create", commandMock, new String[]{"create", "craftNameArgOne"});
 
         // Then
-        verify(inventoryMock, times(19)).setItem(anyInt(), any());
+        verify(inventoryMock, times(9)).setItem(anyInt(), any());
         verify(playerMock).openInventory(inventoryMock);
     }
 

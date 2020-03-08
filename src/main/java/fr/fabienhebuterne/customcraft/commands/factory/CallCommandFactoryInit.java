@@ -64,7 +64,9 @@ public class CallCommandFactoryInit {
             }
 
             return true;
-        } catch (Exception ignored) { }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return false;
     }
