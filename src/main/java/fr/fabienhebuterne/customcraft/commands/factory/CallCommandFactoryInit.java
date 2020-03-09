@@ -1,5 +1,6 @@
 package fr.fabienhebuterne.customcraft.commands.factory;
 
+import fr.fabienhebuterne.customcraft.exceptions.CustomException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ public class CallCommandFactoryInit {
 
     /**
      * Init this factory with plugin instance
+     *
      * @param instance Main class of your plugin
      */
     public CallCommandFactoryInit(JavaPlugin instance, String baseCommand) {
@@ -64,6 +66,7 @@ public class CallCommandFactoryInit {
             }
 
             return true;
+        } catch (CustomException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
         }

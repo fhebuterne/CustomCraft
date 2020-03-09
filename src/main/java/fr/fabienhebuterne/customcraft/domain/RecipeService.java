@@ -1,7 +1,7 @@
 package fr.fabienhebuterne.customcraft.domain;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
-import fr.fabienhebuterne.customcraft.domain.config.Config;
+import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
 import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
 import fr.fabienhebuterne.customcraft.utils.ListUtils;
 import org.bukkit.NamespacedKey;
@@ -83,17 +83,16 @@ public class RecipeService {
     }
 
     private void addRecipeOnServer(Player player, Recipe recipe, RecipeConfig recipeConfig) {
-        Config customcraft = this.customCraft.getConfig().getSerializable("customcraft", Config.class);
+        CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig();
 
         if (customcraft == null) {
-            customcraft = new Config();
+            customcraft = new CustomCraftConfig();
         }
 
         try {
             this.customCraft.getServer().addRecipe(recipe);
             customcraft.addRecipe(recipeConfig);
-            this.customCraft.getConfig().set("customcraft", customcraft);
-            this.customCraft.saveConfig();
+            this.customCraft.saveCustomCraftConfig(customcraft);
         } catch (IllegalStateException e) {
             player.sendMessage("§cErreur : Cette recette est déjà présente !");
         }
@@ -119,7 +118,7 @@ public class RecipeService {
 
     // TODO : Create other service to load all recipes
     public void loadCustomRecipe() {
-        Config customcraft = this.customCraft.getConfig().getSerializable("customcraft", Config.class);
+        CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig();
 
         if (customcraft == null) {
             return;
@@ -136,7 +135,6 @@ public class RecipeService {
                     if (recipeConfig.getRecipeType() == RecipeType.SHAPELESS_RECIPE) {
                         loadShapelessRecipe(recipeConfig);
                     }
-
                 });
     }
 

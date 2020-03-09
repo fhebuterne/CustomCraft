@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Config implements ConfigurationSerializable {
+public class CustomCraftConfig implements ConfigurationSerializable {
 
     private List<RecipeConfig> recipes = new ArrayList<>();
     private HashMap<ItemStack, OptionItemStackConfig> optionItemStack = new HashMap<>();
@@ -46,8 +46,8 @@ public class Config implements ConfigurationSerializable {
         return map;
     }
 
-    public static Config deserialize(Map<String, Object> map) {
-        Config config = new Config();
+    public static CustomCraftConfig deserialize(Map<String, Object> map) {
+        CustomCraftConfig config = new CustomCraftConfig();
         config.recipes = (List<RecipeConfig>) map.get("recipes");
         config.optionItemStack = (HashMap<ItemStack, OptionItemStackConfig>) map.get("optionItemStack");
         return config;

@@ -1,7 +1,7 @@
 package fr.fabienhebuterne.customcraft.listeners;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
-import fr.fabienhebuterne.customcraft.domain.config.Config;
+import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
 import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,7 +30,7 @@ public class PlayerInteractEventListener implements Listener {
             return;
         }
 
-        Config config = this.customCraft.getConfig().getSerializable("customcraft", Config.class);
+        CustomCraftConfig config = this.customCraft.getCustomCraftConfig();
 
         if (config == null) {
             return;
