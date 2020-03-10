@@ -29,10 +29,9 @@ public class ConfigService<T extends ConfigurationSerializable> {
     }
 
     public void createOrLoadConfig() {
-        configFile = new File(this.instance.getDataFolder(), this.fileName);
+        configFile = new File(this.instance.getDataFolder(), this.fileName + ".yml");
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
-            this.instance.saveResource(fileName + ".yml", false);
         }
 
         configFileConfiguration = new YamlConfiguration();
