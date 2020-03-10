@@ -2,6 +2,7 @@ package fr.fabienhebuterne.customcraft;
 
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommandFactoryInit;
 import fr.fabienhebuterne.customcraft.domain.RecipeService;
+import fr.fabienhebuterne.customcraft.domain.config.ConfigService;
 import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
 import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
 import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
@@ -9,14 +10,9 @@ import fr.fabienhebuterne.customcraft.listeners.InventoryClickEventListener;
 import fr.fabienhebuterne.customcraft.listeners.PlayerInteractEventListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -29,10 +25,7 @@ public class CustomCraft extends JavaPlugin {
     }
 
     private CallCommandFactoryInit callCommandFactoryInit;
-
-    // TODO : Put custom config in other class
-    private File customCraftFile;
-    private FileConfiguration customCraftFileConfiguration;
+    private ConfigService<CustomCraftConfig> customCraftConfig;
 
     // Used between inventory navigation to keep data before validation
     // TODO : Create object to stock tmp recipe and not only just craftName string ...
@@ -45,7 +38,8 @@ public class CustomCraft extends JavaPlugin {
     @Override
     public void onEnable() {
         // TODO : Add brigadier lib to implement command autocompletion in game
-        createCustomCraftConfig();
+        customCraftConfig = new ConfigService<>(this, "customcraft", "customcraft", CustomCraftConfig.class);
+        customCraftConfig.createOrLoadConfig();
 
         this.callCommandFactoryInit = new CallCommandFactoryInit(this, "customcraft");
         new RecipeService(this).loadCustomRecipe();
@@ -82,39 +76,7 @@ public class CustomCraft extends JavaPlugin {
         tmpData.remove(uuid);
     }
 
-
-    // TODO : Refactor to use custom service to add unlimited custom file config
-    // Custom config to put custom craft info
-    // config.yml is reserved to add futur custom options
-    private void createCustomCraftConfig() {
-        customCraftFile = new File(getDataFolder(), "customcraft.yml");
-        if (!customCraftFile.exists()) {
-            customCraftFile.getParentFile().mkdirs();
-            saveResource("customcraft.yml", false);
-        }
-
-        customCraftFileConfiguration = new YamlConfiguration();
-        try {
-            customCraftFileConfiguration.load(customCraftFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public FileConfiguration getCustomConfig() {
-        return this.customCraftFileConfiguration;
-    }
-
-    public CustomCraftConfig getCustomCraftConfig() {
-        return customCraftFileConfiguration.getSerializable("customcraft", CustomCraftConfig.class);
-    }
-
-    public void saveCustomCraftConfig(CustomCraftConfig customCraftConfig) {
-        try {
-            customCraftFileConfiguration.set("customcraft", customCraftConfig);
-            customCraftFileConfiguration.save(customCraftFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ConfigService<CustomCraftConfig> getCustomCraftConfig() {
+        return customCraftConfig;
     }
 }

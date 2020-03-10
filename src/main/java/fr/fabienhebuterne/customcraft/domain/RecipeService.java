@@ -83,7 +83,7 @@ public class RecipeService {
     }
 
     private void addRecipeOnServer(Player player, Recipe recipe, RecipeConfig recipeConfig) {
-        CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig();
+        CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig().getSerializable();
 
         if (customcraft == null) {
             customcraft = new CustomCraftConfig();
@@ -92,7 +92,7 @@ public class RecipeService {
         try {
             this.customCraft.getServer().addRecipe(recipe);
             customcraft.addRecipe(recipeConfig);
-            this.customCraft.saveCustomCraftConfig(customcraft);
+            this.customCraft.getCustomCraftConfig().save(customcraft);
         } catch (IllegalStateException e) {
             player.sendMessage("§cErreur : Cette recette est déjà présente !");
         }
@@ -118,7 +118,7 @@ public class RecipeService {
 
     // TODO : Create other service to load all recipes
     public void loadCustomRecipe() {
-        CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig();
+        CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig().getSerializable();
 
         if (customcraft == null) {
             return;
