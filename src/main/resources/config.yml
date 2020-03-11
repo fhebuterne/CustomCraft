@@ -1,0 +1,6 @@
+#
+# Default CustomCraft config                   #
+# Do not edit all line start with ==:          #
+configTest:
+  ==: fr.fabienhebuterne.customcraft.domain.config.DefaultConfig
+  language: en

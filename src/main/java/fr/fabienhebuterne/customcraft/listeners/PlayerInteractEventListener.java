@@ -30,7 +30,7 @@ public class PlayerInteractEventListener implements Listener {
             return;
         }
 
-        CustomCraftConfig config = this.customCraft.getCustomCraftConfig();
+        CustomCraftConfig config = this.customCraft.getCustomCraftConfig().getSerializable();
 
         if (config == null) {
             return;
