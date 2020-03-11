@@ -1,0 +1,5 @@
+translation:
+  ==: fr.fabienhebuterne.customcraft.domain.config.TranslationConfig
+  onlyPlayerCommand: "§cThis command is not available in console !"
+  usageCommand: "§cUsage : /customcraft {0}"
+  missingCraftItem: "§cYou did not put any craftable item..."

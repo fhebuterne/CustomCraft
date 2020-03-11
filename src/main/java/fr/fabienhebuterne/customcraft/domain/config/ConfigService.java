@@ -28,15 +28,20 @@ public class ConfigService<T extends ConfigurationSerializable> {
         this.clazzSerialization = clazzSerialization;
     }
 
-    public void createOrLoadConfig() {
+    public void createOrLoadConfig(boolean copyFromRessource) {
         configFile = new File(this.instance.getDataFolder(), this.fileName + ".yml");
+
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
+            if (copyFromRessource) {
+                this.instance.saveResource(fileName + ".yml", false);
+            }
         }
 
         configFileConfiguration = new YamlConfiguration();
         try {
             configFileConfiguration.load(configFile);
+            System.out.println(configFileConfiguration.getSerializable(pathSerialization, clazzSerialization));
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }

@@ -100,7 +100,7 @@ public class InventoryClickEventListener implements Listener {
             if (resultCraft == null) {
                 ItemStack itemStack = e.getInventory().getItem(VALID_INVENTORY_CASE);
                 ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setLore(Collections.singletonList("§cErreur : Vous n'avez pas mis d'item craftable..."));
+                itemMeta.setLore(Collections.singletonList(CustomCraft.getTranslationConfig().getSerializable().getMissingCraftItem()));
                 itemStack.setItemMeta(itemMeta);
                 e.getInventory().setItem(VALID_INVENTORY_CASE, itemStack);
                 return;
