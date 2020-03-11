@@ -54,14 +54,12 @@ public class CustomCraft extends JavaPlugin {
         customCraftConfig.createOrLoadConfig(false);
 
         defaultConfig = new ConfigService<>(this, "config", "configTest", DefaultConfig.class);
-        defaultConfig.createOrLoadConfig(false);
+        defaultConfig.createOrLoadConfig(true);
 
         String language = defaultConfig.getSerializable().getLanguage();
 
         translationConfig = new ConfigService<>(this, "translation-" + language, "translation", TranslationConfig.class);
-        translationConfig.createOrLoadConfig(false);
-
-        System.out.println(translationConfig.getSerializable().getOnlyPlayerCommand());
+        translationConfig.createOrLoadConfig(true);
     }
 
     @Override

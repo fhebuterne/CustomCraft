@@ -41,7 +41,6 @@ public class ConfigService<T extends ConfigurationSerializable> {
         configFileConfiguration = new YamlConfiguration();
         try {
             configFileConfiguration.load(configFile);
-            System.out.println(configFileConfiguration.getSerializable(pathSerialization, clazzSerialization));
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
