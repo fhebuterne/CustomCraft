@@ -34,7 +34,7 @@ public class CallCommandFactoryInit {
                                         boolean loadWithArgs) {
         // TODO : Add boolean to choose use baseCommand or not (ex: use /namePlugin command or just /command)
         if (!baseCommand.equalsIgnoreCase(commandLabel)) {
-            return false;
+            return true;
         }
 
         String commandLowercase;
@@ -43,7 +43,7 @@ public class CallCommandFactoryInit {
             commandLowercase = command.getName().toLowerCase();
         } else {
             if (args.length == 0) {
-                return false;
+                return true;
             }
             commandLowercase = args[0].toLowerCase();
         }
@@ -64,14 +64,12 @@ public class CallCommandFactoryInit {
             } else {
                 cmd.run(getServer(), (Player) cSender, commandLabel, command, args);
             }
-
-            return true;
-        } catch (CustomException ignored) {
+        } catch (CustomException | ClassNotFoundException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
 }
