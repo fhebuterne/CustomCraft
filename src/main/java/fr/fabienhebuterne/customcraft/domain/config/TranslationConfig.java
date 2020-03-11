@@ -11,6 +11,7 @@ public class TranslationConfig implements ConfigurationSerializable {
     private String onlyPlayerCommand;
     private String usageCommand;
     private String missingCraftItem;
+    private String reload;
 
     public String getOnlyPlayerCommand() {
         return onlyPlayerCommand;
@@ -24,12 +25,17 @@ public class TranslationConfig implements ConfigurationSerializable {
         return missingCraftItem;
     }
 
+    public String getReload() {
+        return reload;
+    }
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
         map.put("onlyPlayerCommand", onlyPlayerCommand);
         map.put("usageCommand", usageCommand);
         map.put("missingCraftItem", missingCraftItem);
+        map.put("reload", reload);
         return map;
     }
 
@@ -38,6 +44,7 @@ public class TranslationConfig implements ConfigurationSerializable {
         translationConfig.onlyPlayerCommand = (String) map.get("onlyPlayerCommand");
         translationConfig.usageCommand = (String) map.get("usageCommand");
         translationConfig.missingCraftItem = (String) map.get("missingCraftItem");
+        translationConfig.reload = (String) map.get("reload");
         return translationConfig;
     }
 

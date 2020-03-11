@@ -2,14 +2,15 @@ package fr.fabienhebuterne.customcraft.commands.factory;
 
 import org.bukkit.Server;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public abstract class CallCommand implements ICallCommand {
+public abstract class CallCommand<T extends JavaPlugin> implements ICallCommand<T> {
     private final transient String name;
-    protected transient JavaPlugin instance;
+    protected transient T instance;
     protected transient String permission;
     protected static final Logger logger = Logger.getLogger("CustomCraft");
 
@@ -18,12 +19,12 @@ public abstract class CallCommand implements ICallCommand {
     }
 
     @Override
-    public void setInstance(final JavaPlugin instance) {
+    public void setInstance(final T instance) {
         this.instance = instance;
     }
 
     @Override
-    public JavaPlugin getInstance() {
+    public T getInstance() {
         return instance;
     }
 
@@ -51,25 +52,27 @@ public abstract class CallCommand implements ICallCommand {
     }
 
     protected void runFromPlayer(final Server server,
-                    final Player player,
-                    final String commandLabel,
-                    final Command cmd,
-                    final String[] args) throws Exception {
+                                 final Player player,
+                                 final String commandLabel,
+                                 final Command cmd,
+                                 final String[] args) throws Exception {
 
     }
 
     @Override
     public void run(final Server server,
-             final String commandLabel,
-             final Command cmd,
-             final String[] args) throws Exception {
-        runFromOther(server, commandLabel, cmd, args);
+                    final CommandSender commandSender,
+                    final String commandLabel,
+                    final Command cmd,
+                    final String[] args) throws Exception {
+        runFromOther(server, commandSender, commandLabel, cmd, args);
     }
 
     protected void runFromOther(final Server server,
-                                 final String commandLabel,
-                                 final Command cmd,
-                                 final String[] args) throws Exception {
+                                final CommandSender commandSender,
+                                final String commandLabel,
+                                final Command cmd,
+                                final String[] args) throws Exception {
 
     }
 

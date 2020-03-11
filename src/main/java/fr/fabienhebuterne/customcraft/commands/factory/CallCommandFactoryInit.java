@@ -9,9 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import static org.bukkit.Bukkit.getServer;
 
 // TODO : Move factory in external libs
-public class CallCommandFactoryInit {
+public class CallCommandFactoryInit<T extends JavaPlugin> {
 
-    private JavaPlugin instance;
+    private T instance;
     private String baseCommand;
 
     /**
@@ -19,12 +19,12 @@ public class CallCommandFactoryInit {
      *
      * @param instance Main class of your plugin
      */
-    public CallCommandFactoryInit(JavaPlugin instance, String baseCommand) {
+    public CallCommandFactoryInit(T instance, String baseCommand) {
         this.instance = instance;
         this.baseCommand = baseCommand;
     }
 
-    public boolean onCommandCustomCraft(final CommandSender cSender,
+    public boolean onCommandCustomCraft(final CommandSender commandSender,
                                         final Command command,
                                         final String commandLabel,
                                         final String[] args,
@@ -55,14 +55,14 @@ public class CallCommandFactoryInit {
         String commandClassPath = commandPath + ".Command" + commandName;
 
         try {
-            ICallCommand cmd = (ICallCommand) classLoader.loadClass(commandClassPath).newInstance();
+            ICallCommand<T> cmd = (ICallCommand<T>) classLoader.loadClass(commandClassPath).newInstance();
             cmd.setInstance(instance);
             cmd.setPermission(permissionPrefix + commandName);
 
-            if (!(cSender instanceof Player)) {
-                cmd.run(getServer(), commandLabel, command, args);
+            if (!(commandSender instanceof Player)) {
+                cmd.run(getServer(), commandSender, commandLabel, command, args);
             } else {
-                cmd.run(getServer(), (Player) cSender, commandLabel, command, args);
+                cmd.run(getServer(), (Player) commandSender, commandLabel, command, args);
             }
         } catch (CustomException | ClassNotFoundException ignored) {
         } catch (Exception e) {

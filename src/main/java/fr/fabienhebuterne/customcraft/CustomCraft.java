@@ -24,7 +24,7 @@ public class CustomCraft extends JavaPlugin {
         ConfigurationSerialization.registerClass(TranslationConfig.class, "TranslationConfig");
     }
 
-    private CallCommandFactoryInit callCommandFactoryInit;
+    private CallCommandFactoryInit<CustomCraft> callCommandFactoryInit;
 
     private ConfigService<CustomCraftConfig> customCraftConfig;
     private ConfigService<DefaultConfig> defaultConfig;
@@ -43,13 +43,13 @@ public class CustomCraft extends JavaPlugin {
         // TODO : Add brigadier lib to implement command autocompletion in game
         this.loadAllConfig();
 
-        this.callCommandFactoryInit = new CallCommandFactoryInit(this, "customcraft");
+        this.callCommandFactoryInit = new CallCommandFactoryInit<>(this, "customcraft");
         new RecipeService(this).loadCustomRecipe();
         this.getServer().getPluginManager().registerEvents(new InventoryClickEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(this), this);
     }
 
-    private void loadAllConfig() {
+    public void loadAllConfig() {
         customCraftConfig = new ConfigService<>(this, "customcraft", "customcraft", CustomCraftConfig.class);
         customCraftConfig.createOrLoadConfig(false);
 
