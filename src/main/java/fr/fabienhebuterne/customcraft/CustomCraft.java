@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -41,7 +42,11 @@ public class CustomCraft extends JavaPlugin {
     @Override
     public void onEnable() {
         // TODO : Add brigadier lib to implement command autocompletion in game
-        this.loadAllConfig();
+        try {
+            this.loadAllConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         this.callCommandFactoryInit = new CallCommandFactoryInit<>(this, "customcraft");
         new RecipeService(this).loadCustomRecipe();
@@ -49,7 +54,7 @@ public class CustomCraft extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(this), this);
     }
 
-    public void loadAllConfig() {
+    public void loadAllConfig() throws IOException {
         customCraftConfig = new ConfigService<>(this, "customcraft", "customcraft", CustomCraftConfig.class);
         customCraftConfig.createOrLoadConfig(false);
 

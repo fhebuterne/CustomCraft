@@ -28,13 +28,15 @@ public class ConfigService<T extends ConfigurationSerializable> {
         this.clazzSerialization = clazzSerialization;
     }
 
-    public void createOrLoadConfig(boolean copyFromRessource) {
+    public void createOrLoadConfig(boolean copyFromRessource) throws IOException {
         configFile = new File(this.instance.getDataFolder(), this.fileName + ".yml");
 
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
             if (copyFromRessource) {
                 this.instance.saveResource(fileName + ".yml", false);
+            } else {
+                configFile.createNewFile();
             }
         }
 
