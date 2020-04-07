@@ -13,6 +13,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 public class CommandReload extends CallCommand<CustomCraft> {
@@ -25,11 +26,11 @@ public class CommandReload extends CallCommand<CustomCraft> {
         this.reload(commandSender);
     }
 
-    protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) {
+    protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) throws IOException {
         this.reload(player);
     }
 
-    private void reload(CommandSender commandSender) {
+    private void reload(CommandSender commandSender) throws IOException {
         CustomCraft instance = this.getInstance();
         instance.loadAllConfig();
         Iterator<Recipe> recipeIterator = Bukkit.getServer().recipeIterator();
