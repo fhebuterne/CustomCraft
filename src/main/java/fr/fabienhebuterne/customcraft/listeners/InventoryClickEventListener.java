@@ -1,14 +1,17 @@
 package fr.fabienhebuterne.customcraft.listeners;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
-import fr.fabienhebuterne.customcraft.domain.RecipeInventoryService;
+import fr.fabienhebuterne.customcraft.domain.InventoryInitService;
+import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
 import fr.fabienhebuterne.customcraft.domain.RecipeService;
 import fr.fabienhebuterne.customcraft.domain.RecipeType;
+import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -16,27 +19,65 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static fr.fabienhebuterne.customcraft.commands.CommandCreate.*;
+import static fr.fabienhebuterne.customcraft.domain.InventoryInitService.*;
 
 public class InventoryClickEventListener implements Listener {
 
-    private CustomCraft customCraft;
+    private final CustomCraft customCraft;
+    private final InventoryInitService inventoryInitService;
 
     public InventoryClickEventListener(CustomCraft customCraft) {
         this.customCraft = customCraft;
+        // TODO : Dependency Injection
+        this.inventoryInitService = new InventoryInitService(customCraft);
     }
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent e) {
-        this.chooseCraftType(e);
-        this.createCraftFromShapedOrShapelessRecipe(e);
-    }
-
-    private void chooseCraftType(InventoryClickEvent e) {
-        if (!e.getView().getTitle().contentEquals("CustomCraft - Recipe type")) {
+        if (!e.getView().getTitle().contains("CustomCraft")) {
             return;
         }
 
+        Player player = (Player) e.getView().getPlayer();
+        PrepareCustomCraft prepareCustomCraft = customCraft.getTmpData().get(player.getUniqueId());
+
+        if (e.getView().getTitle().equals("CustomCraft - Options")) {
+            this.chooseOptions(e, prepareCustomCraft);
+            return;
+        }
+
+        if (prepareCustomCraft.getRecipeType() == null) {
+            this.chooseCraftType(e, prepareCustomCraft);
+        } else {
+            this.createCraftFromShapedOrShapelessRecipe(e, prepareCustomCraft);
+        }
+    }
+
+    // TODO : Refactor chooseOption and use ENUM
+    private void chooseOptions(InventoryClickEvent e, PrepareCustomCraft prepareCustomCraft) {
+        e.setCancelled(true);
+
+        Player player = (Player) e.getView().getPlayer();
+
+        if (e.getSlot() == 0) {
+            OptionItemStackConfig optionItemStackConfig = prepareCustomCraft.getOptionItemStackConfig();
+            optionItemStackConfig.setBlockCanBePlaced(!optionItemStackConfig.isBlockCanBePlaced());
+            prepareCustomCraft.setOptionItemStackConfig(optionItemStackConfig);
+        }
+
+        if (e.getSlot() == 1) {
+            prepareCustomCraft.setHighlightItem(!prepareCustomCraft.getHighlightItem());
+        }
+
+        System.out.println(prepareCustomCraft);
+
+        if (e.getSlot() == QUIT_INVENTORY_CASE) {
+            Inventory craftShapedOrShapelessRecipeInventory = this.inventoryInitService.createCraftShapedOrShapelessRecipeInventory(player, prepareCustomCraft.getRecipeType());
+            player.openInventory(craftShapedOrShapelessRecipeInventory);
+        }
+    }
+
+    private void chooseCraftType(InventoryClickEvent e, PrepareCustomCraft prepareCustomCraft) {
         boolean invClick = e.getClickedInventory() != null && e.getClickedInventory().getType() == InventoryType.CHEST;
 
         if (invClick) {
@@ -45,32 +86,35 @@ public class InventoryClickEventListener implements Listener {
 
         Player player = (Player) e.getView().getPlayer();
 
+        Inventory inventory = null;
+
         if (e.getSlot() == RecipeType.SHAPED_RECIPE.getInvIndex()) {
-            new RecipeInventoryService(customCraft).openCreateCraftShapedOrShapelessRecipeInventory(
+            prepareCustomCraft.setRecipeType(RecipeType.SHAPED_RECIPE);
+            inventory = inventoryInitService.createCraftShapedOrShapelessRecipeInventory(
                     player,
                     RecipeType.SHAPED_RECIPE
             );
         }
 
         if (e.getSlot() == RecipeType.SHAPELESS_RECIPE.getInvIndex()) {
-            new RecipeInventoryService(customCraft).openCreateCraftShapedOrShapelessRecipeInventory(
+            prepareCustomCraft.setRecipeType(RecipeType.SHAPELESS_RECIPE);
+            inventory = inventoryInitService.createCraftShapedOrShapelessRecipeInventory(
                     player,
                     RecipeType.SHAPELESS_RECIPE
             );
         }
-    }
 
-    private void createCraftFromShapedOrShapelessRecipe(InventoryClickEvent e) {
-        if (!e.getView().getTitle().contains("CustomCraft - ") ||
-                e.getView().getTitle().contentEquals("CustomCraft - Recipe type")) {
+        if (inventory == null) {
             return;
         }
 
-        // TODO : Refactoring with tmpData variable and stop to use title to keep data ...
-        RecipeType recipeType = RecipeType.valueOf(e.getView().getTitle().split("CustomCraft - ")[1]);
+        player.openInventory(inventory);
+    }
 
+    private void createCraftFromShapedOrShapelessRecipe(InventoryClickEvent e, PrepareCustomCraft prepareCustomCraft) {
         boolean invCases = !CRAFT_CASES.contains(e.getSlot()) && RESULT_CRAFT_CASE != e.getSlot();
         boolean invClick = e.getClickedInventory() != null && e.getClickedInventory().getType() == InventoryType.CHEST;
+        Player player = (Player) e.getView().getPlayer();
 
         if (invCases && invClick) {
             e.setCancelled(true);
@@ -80,24 +124,19 @@ public class InventoryClickEventListener implements Listener {
             e.getView().close();
         }
 
+        if (e.getSlot() == OPTIONS_INVENTORY_CASE) {
+            Inventory inventory = inventoryInitService.optionsInventory(player, prepareCustomCraft.getRecipeType());
+            player.openInventory(inventory);
+        }
+
         if (e.getSlot() == VALID_INVENTORY_CASE) {
             // Craft order
-            ArrayList<ItemStack> craftCaseRecipe = new ArrayList<>();
+            ArrayList<ItemStack> craftCaseOrderRecipe = new ArrayList<>();
+            CRAFT_CASES.forEach(integer -> craftCaseOrderRecipe.add(e.getInventory().getItem(integer)));
+            prepareCustomCraft.setCraftCaseOrderRecipe(craftCaseOrderRecipe);
 
-            // Give for each diffrent itemstack an unique id to set in grid
-            HashMap<Integer, ItemStack> idCraftCaseRecipse = new HashMap<>();
-
-            CRAFT_CASES.forEach(integer -> craftCaseRecipe.add(e.getInventory().getItem(integer)));
-
-            craftCaseRecipe.forEach(itemStack -> {
-                if (!idCraftCaseRecipse.containsValue(itemStack)) {
-                    idCraftCaseRecipse.put(craftCaseRecipe.indexOf(itemStack), itemStack);
-                }
-            });
-
-            ItemStack resultCraft = e.getInventory().getItem(RESULT_CRAFT_CASE);
-
-            if (resultCraft == null) {
+            ItemStack craftResult = e.getInventory().getItem(RESULT_CRAFT_CASE);
+            if (craftResult == null) {
                 ItemStack itemStack = e.getInventory().getItem(VALID_INVENTORY_CASE);
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setLore(Collections.singletonList(CustomCraft.getTranslationConfig().getSerializable().getMissingCraftItem()));
@@ -106,30 +145,42 @@ public class InventoryClickEventListener implements Listener {
                 return;
             }
 
-            Player player = (Player) e.getView().getPlayer();
+            // TODO : Cancel before add craft if one case have more than 1 item (technical limitation)
 
-            String craftName = customCraft.getTmpData().get(player.getUniqueId());
+            prepareCustomCraft.setCraftResult(craftResult);
+            addNewRecipe(player, prepareCustomCraft);
+        }
+    }
 
-            if (recipeType == RecipeType.SHAPED_RECIPE) {
-                new RecipeService(this.customCraft).addShapedRecipe(
-                        player,
-                        craftCaseRecipe,
-                        idCraftCaseRecipse,
-                        resultCraft,
-                        craftName,
-                        recipeType
-                );
-            } else {
-                new RecipeService(this.customCraft).addShapelessRecipe(
-                        player,
-                        craftCaseRecipe,
-                        idCraftCaseRecipse,
-                        resultCraft,
-                        craftName,
-                        recipeType
-                );
+    private void addNewRecipe(Player player, PrepareCustomCraft prepareCustomCraft) {
+        // Give for each different itemstack an unique id to set in grid
+        HashMap<Integer, ItemStack> idCraftCaseRecipse = new HashMap<>();
+
+        prepareCustomCraft.getCraftCaseOrderRecipe().forEach(itemStack -> {
+            if (!idCraftCaseRecipse.containsValue(itemStack)) {
+                idCraftCaseRecipse.put(prepareCustomCraft.getCraftCaseOrderRecipe().indexOf(itemStack), itemStack);
             }
+        });
 
+        // Add hidden enchant to keep highlight item in chest or with other plugins
+        if (prepareCustomCraft.getHighlightItem()) {
+            ItemStack craftResult = prepareCustomCraft.getCraftResult();
+            craftResult.addEnchantment(this.customCraft.customCraftEnchantment, 1);
+            prepareCustomCraft.setCraftResult(craftResult);
+        }
+
+        if (prepareCustomCraft.getRecipeType() == RecipeType.SHAPED_RECIPE) {
+            new RecipeService(this.customCraft).addShapedRecipe(
+                    player,
+                    idCraftCaseRecipse,
+                    prepareCustomCraft
+            );
+        } else {
+            new RecipeService(this.customCraft).addShapelessRecipe(
+                    player,
+                    idCraftCaseRecipse,
+                    prepareCustomCraft
+            );
         }
     }
 

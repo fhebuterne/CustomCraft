@@ -1,7 +1,10 @@
 package fr.fabienhebuterne.customcraft.commands;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.domain.config.ConfigService;
+import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
 import fr.fabienhebuterne.customcraft.exceptions.BadArgumentsException;
+import fr.fabienhebuterne.customcraft.exceptions.CustomCraftAlreadyExistException;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -34,11 +37,12 @@ public class CommandCreateTest {
     }
 
     @Test
-    public void should_open_inventory_for_a_player() throws BadArgumentsException {
+    public void should_open_inventory_for_a_player() throws BadArgumentsException, CustomCraftAlreadyExistException {
         // Given
         Player playerMock = mock(Player.class);
         Command commandMock = mock(Command.class);
         CustomCraft customCraft = mock(CustomCraft.class);
+        ConfigService<CustomCraftConfig> configService = mock(ConfigService.class);
 
         // Mock ItemMeta
         ItemFactory itemFactory = mock(ItemFactory.class);
@@ -51,6 +55,9 @@ public class CommandCreateTest {
 
         Inventory inventoryMock = mock(Inventory.class);
         given(Bukkit.createInventory(playerMock, 9, "CustomCraft - Recipe type")).willReturn(inventoryMock);
+
+        given(customCraft.getCustomCraftConfig()).willReturn(configService);
+        given(configService.getSerializable()).willReturn(new CustomCraftConfig());
 
         // When
         commandCreate.runFromPlayer(serverMock, playerMock, "create", commandMock, new String[]{"create", "craftNameArgOne"});

@@ -53,7 +53,17 @@ public class ConfigService<T extends ConfigurationSerializable> {
     }
 
     public T getSerializable() {
-        return configFileConfiguration.getSerializable(this.pathSerialization, this.clazzSerialization);
+        T serializable = configFileConfiguration.getSerializable(this.pathSerialization, this.clazzSerialization);
+
+        if (serializable == null) {
+            try {
+                return clazzSerialization.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return serializable;
     }
 
     public void save(Object object) {

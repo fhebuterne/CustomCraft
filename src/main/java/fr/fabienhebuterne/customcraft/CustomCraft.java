@@ -1,16 +1,21 @@
 package fr.fabienhebuterne.customcraft;
 
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommandFactoryInit;
+import fr.fabienhebuterne.customcraft.domain.CustomCraftEnchantment;
+import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
 import fr.fabienhebuterne.customcraft.domain.RecipeService;
 import fr.fabienhebuterne.customcraft.domain.config.*;
 import fr.fabienhebuterne.customcraft.listeners.InventoryClickEventListener;
 import fr.fabienhebuterne.customcraft.listeners.PlayerInteractEventListener;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -26,14 +31,14 @@ public class CustomCraft extends JavaPlugin {
     }
 
     private CallCommandFactoryInit<CustomCraft> callCommandFactoryInit;
-
     private ConfigService<CustomCraftConfig> customCraftConfig;
     private ConfigService<DefaultConfig> defaultConfig;
     private static ConfigService<TranslationConfig> translationConfig;
 
     // Used between inventory navigation to keep data before validation
-    // TODO : Create object to stock tmp recipe and not only just craftName string ...
-    private HashMap<UUID, String> tmpData = new HashMap<>();
+    private HashMap<UUID, PrepareCustomCraft> tmpData = new HashMap<>();
+
+    public CustomCraftEnchantment customCraftEnchantment;
 
     @Override
     public void onDisable() {
@@ -52,6 +57,9 @@ public class CustomCraft extends JavaPlugin {
         new RecipeService(this).loadCustomRecipe();
         this.getServer().getPluginManager().registerEvents(new InventoryClickEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(this), this);
+
+        customCraftEnchantment = new CustomCraftEnchantment(new NamespacedKey(this, "CustomCraft"));
+        this.enchantmentRegistration();
     }
 
     public void loadAllConfig() throws IOException {
@@ -84,12 +92,12 @@ public class CustomCraft extends JavaPlugin {
         );
     }
 
-    public HashMap<UUID, String> getTmpData() {
+    public HashMap<UUID, PrepareCustomCraft> getTmpData() {
         return tmpData;
     }
 
-    public void addTmpData(UUID uuid, String craftName) {
-        tmpData.put(uuid, craftName);
+    public void addTmpData(UUID uuid, PrepareCustomCraft prepareCustomCraft) {
+        tmpData.put(uuid, prepareCustomCraft);
     }
 
     public void removeTmpData(UUID uuid) {
@@ -106,5 +114,18 @@ public class CustomCraft extends JavaPlugin {
 
     public ConfigService<DefaultConfig> getDefaultConfig() {
         return defaultConfig;
+    }
+
+    private void enchantmentRegistration() {
+        try {
+            Field acceptNewEnchantement = Enchantment.class.getDeclaredField("acceptingNew");
+            acceptNewEnchantement.setAccessible(true);
+            acceptNewEnchantement.set(null, true);
+            Enchantment.registerEnchantment(this.customCraftEnchantment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Enchantment.stopAcceptingRegistrations();
+        }
     }
 }

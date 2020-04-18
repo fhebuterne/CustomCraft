@@ -2,6 +2,7 @@ package fr.fabienhebuterne.customcraft.domain;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
 import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
+import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
 import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
 import fr.fabienhebuterne.customcraft.utils.ListUtils;
 import org.bukkit.NamespacedKey;
@@ -20,57 +21,62 @@ public class RecipeService {
         this.customCraft = customCraft;
     }
 
-    // TODO : this is test
-    //OptionItemStackConfig optionItemStackConfig = new OptionItemStackConfig();
-    //optionItemStackConfig.setBlockCanBePlaced(false);
-    //customcraft.addOptionItemStackConfig(new ItemStack(Material.APPLE), optionItemStackConfig);
-    // -------
-
     public void addShapedRecipe(Player player,
-                                ArrayList<ItemStack> craftCaseRecipe,
                                 HashMap<Integer, ItemStack> idCraftCaseRecipse,
-                                ItemStack resultCraft,
-                                String craftName,
-                                RecipeType recipeType) {
-        ArrayList<String> grid = getGrid(craftCaseRecipe, idCraftCaseRecipse);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(this.customCraft, craftName), resultCraft);
+                                PrepareCustomCraft prepareCustomCraft) {
+        ArrayList<String> grid = getGrid(prepareCustomCraft.getCraftCaseOrderRecipe(), idCraftCaseRecipse);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(
+                new NamespacedKey(this.customCraft, prepareCustomCraft.getCraftName()),
+                prepareCustomCraft.getCraftResult()
+        );
+
         shapedRecipe.shape(grid.get(0), grid.get(1), grid.get(2));
         idCraftCaseRecipse.forEach((integer, itemStack) -> {
             if (itemStack != null) {
                 shapedRecipe.setIngredient(integer.toString().charAt(0), new RecipeChoice.ExactChoice(itemStack));
             }
         });
-        RecipeConfig recipeConfig = setRecipeConfig(resultCraft, grid, craftName, idCraftCaseRecipse, recipeType);
-        addRecipeOnServer(player, shapedRecipe, recipeConfig);
+
+        RecipeConfig recipeConfig = setRecipeConfig(
+                prepareCustomCraft,
+                idCraftCaseRecipse,
+                grid
+        );
+
+        addRecipeOnServer(player, shapedRecipe, recipeConfig, prepareCustomCraft.getOptionItemStackConfig());
     }
 
     public void addShapelessRecipe(Player player,
-                                   ArrayList<ItemStack> craftCaseRecipe,
                                    HashMap<Integer, ItemStack> idCraftCaseRecipse,
-                                   ItemStack resultCraft,
-                                   String craftName,
-                                   RecipeType recipeType) {
-        ShapelessRecipe shapelessRecipe = new ShapelessRecipe(new NamespacedKey(this.customCraft, craftName), resultCraft);
-        craftCaseRecipe.stream()
+                                   PrepareCustomCraft prepareCustomCraft) {
+        ShapelessRecipe shapelessRecipe = new ShapelessRecipe(
+                new NamespacedKey(this.customCraft, prepareCustomCraft.getCraftName()),
+                prepareCustomCraft.getCraftResult()
+        );
+
+        prepareCustomCraft.getCraftCaseOrderRecipe().stream()
                 .filter(Objects::nonNull)
                 .forEach(itemStack -> {
                     shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(itemStack));
                 });
 
-        RecipeConfig recipeConfig = setRecipeConfig(resultCraft, new ArrayList<>(), craftName, idCraftCaseRecipse, recipeType);
-        addRecipeOnServer(player, shapelessRecipe, recipeConfig);
+        RecipeConfig recipeConfig = setRecipeConfig(
+                prepareCustomCraft,
+                idCraftCaseRecipse,
+                new ArrayList<>()
+        );
+
+        addRecipeOnServer(player, shapelessRecipe, recipeConfig, prepareCustomCraft.getOptionItemStackConfig());
     }
 
-    private RecipeConfig setRecipeConfig(ItemStack resultCraft,
-                                         ArrayList<String> grid,
-                                         String craftName,
+    private RecipeConfig setRecipeConfig(PrepareCustomCraft prepareCustomCraft,
                                          HashMap<Integer, ItemStack> idCraftCaseRecipse,
-                                         RecipeType recipeType) {
+                                         ArrayList<String> grid) {
         RecipeConfig recipeConfig = new RecipeConfig();
-        recipeConfig.setItemToCraft(resultCraft);
+        recipeConfig.setItemToCraft(prepareCustomCraft.getCraftResult());
         recipeConfig.setGrid(grid);
-        recipeConfig.setCraftName(craftName);
-        recipeConfig.setRecipeType(recipeType);
+        recipeConfig.setCraftName(prepareCustomCraft.getCraftName());
+        recipeConfig.setRecipeType(prepareCustomCraft.getRecipeType());
 
         HashMap<Integer, ItemStack> gridSequence = idCraftCaseRecipse.entrySet()
                 .stream()
@@ -82,7 +88,7 @@ public class RecipeService {
         return recipeConfig;
     }
 
-    private void addRecipeOnServer(Player player, Recipe recipe, RecipeConfig recipeConfig) {
+    private void addRecipeOnServer(Player player, Recipe recipe, RecipeConfig recipeConfig, OptionItemStackConfig optionItemStackConfig) {
         CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig().getSerializable();
 
         if (customcraft == null) {
@@ -92,6 +98,11 @@ public class RecipeService {
         try {
             this.customCraft.getServer().addRecipe(recipe);
             customcraft.addRecipe(recipeConfig);
+
+            HashMap<ItemStack, OptionItemStackConfig> optionItemStackHashMap = customcraft.getOptionItemStack();
+            optionItemStackHashMap.put(recipeConfig.getItemToCraft(), optionItemStackConfig);
+            customcraft.setOptionItemStack(optionItemStackHashMap);
+
             this.customCraft.getCustomCraftConfig().save(customcraft);
         } catch (IllegalStateException e) {
             player.sendMessage("§cErreur : Cette recette est déjà présente !");
