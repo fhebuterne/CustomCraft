@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class PrepareCustomCraft {
     private String craftName;
     private RecipeType recipeType;
-    private ArrayList<ItemStack> craftCaseOrderRecipe;
+    private ArrayList<ItemStack> craftCaseOrderRecipe = new ArrayList<>();
     private ItemStack craftResult;
     // Only for craftResult for now
     private OptionItemStackConfig optionItemStackConfig = new OptionItemStackConfig();

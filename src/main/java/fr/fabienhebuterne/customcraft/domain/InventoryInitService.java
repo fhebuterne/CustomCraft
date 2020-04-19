@@ -47,11 +47,11 @@ public class InventoryInitService {
         return inventory;
     }
 
-    public Inventory createCraftShapedOrShapelessRecipeInventory(Player player, RecipeType recipeType) {
+    public Inventory createCraftShapedOrShapelessRecipeInventory(Player player, PrepareCustomCraft prepareCustomCraft) {
         Inventory inventory = Bukkit.createInventory(
                 player,
                 InventoryType.CHEST,
-                this.customCraft.getName() + " - " + recipeType.getNameType()
+                this.customCraft.getName() + " - " + prepareCustomCraft.getRecipeType().getNameType()
         );
 
         ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -59,6 +59,15 @@ public class InventoryInitService {
         IntStream.range(0, InventoryType.CHEST.getDefaultSize())
                 .filter(value -> !CRAFT_CASES.contains(value) && RESULT_CRAFT_CASE != value)
                 .forEach(value -> inventory.setItem(value, itemStack));
+
+        IntStream.range(0, prepareCustomCraft.getCraftCaseOrderRecipe().size())
+                .forEach(index -> {
+                    inventory.setItem(CRAFT_CASES.get(index), prepareCustomCraft.getCraftCaseOrderRecipe().get(index));
+                });
+
+        if (prepareCustomCraft.getCraftResult() != null) {
+            inventory.setItem(RESULT_CRAFT_CASE, prepareCustomCraft.getCraftResult());
+        }
 
         setValidatorsInventory(inventory);
 

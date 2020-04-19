@@ -47,9 +47,13 @@ public class InventoryClickEventListener implements Listener {
         }
 
         if (prepareCustomCraft.getRecipeType() == null) {
-            this.chooseCraftType(e, prepareCustomCraft);
+            if (e.getView().getTitle().equalsIgnoreCase("CustomCraft - Recipe type")) {
+                this.chooseCraftType(e, prepareCustomCraft);
+            }
         } else {
-            this.createCraftFromShapedOrShapelessRecipe(e, prepareCustomCraft);
+            if (e.getView().getTitle().equalsIgnoreCase("CustomCraft - " + prepareCustomCraft.getRecipeType().getNameType())) {
+                this.createCraftFromShapedOrShapelessRecipe(e, prepareCustomCraft);
+            }
         }
     }
 
@@ -69,10 +73,8 @@ public class InventoryClickEventListener implements Listener {
             prepareCustomCraft.setHighlightItem(!prepareCustomCraft.getHighlightItem());
         }
 
-        System.out.println(prepareCustomCraft);
-
         if (e.getSlot() == QUIT_INVENTORY_CASE) {
-            Inventory craftShapedOrShapelessRecipeInventory = this.inventoryInitService.createCraftShapedOrShapelessRecipeInventory(player, prepareCustomCraft.getRecipeType());
+            Inventory craftShapedOrShapelessRecipeInventory = this.inventoryInitService.createCraftShapedOrShapelessRecipeInventory(player, prepareCustomCraft);
             player.openInventory(craftShapedOrShapelessRecipeInventory);
         }
     }
@@ -86,27 +88,17 @@ public class InventoryClickEventListener implements Listener {
 
         Player player = (Player) e.getView().getPlayer();
 
-        Inventory inventory = null;
-
-        if (e.getSlot() == RecipeType.SHAPED_RECIPE.getInvIndex()) {
-            prepareCustomCraft.setRecipeType(RecipeType.SHAPED_RECIPE);
-            inventory = inventoryInitService.createCraftShapedOrShapelessRecipeInventory(
-                    player,
-                    RecipeType.SHAPED_RECIPE
-            );
-        }
+        // Default recipe
+        prepareCustomCraft.setRecipeType(RecipeType.SHAPED_RECIPE);
 
         if (e.getSlot() == RecipeType.SHAPELESS_RECIPE.getInvIndex()) {
             prepareCustomCraft.setRecipeType(RecipeType.SHAPELESS_RECIPE);
-            inventory = inventoryInitService.createCraftShapedOrShapelessRecipeInventory(
-                    player,
-                    RecipeType.SHAPELESS_RECIPE
-            );
         }
 
-        if (inventory == null) {
-            return;
-        }
+        Inventory inventory = inventoryInitService.createCraftShapedOrShapelessRecipeInventory(
+                player,
+                prepareCustomCraft
+        );
 
         player.openInventory(inventory);
     }
@@ -120,23 +112,19 @@ public class InventoryClickEventListener implements Listener {
             e.setCancelled(true);
         }
 
-        if (e.getSlot() == QUIT_INVENTORY_CASE) {
+        if (e.getRawSlot() == QUIT_INVENTORY_CASE) {
             e.getView().close();
         }
 
-        if (e.getSlot() == OPTIONS_INVENTORY_CASE) {
+        saveIntoPrepareCustomCraft(e, prepareCustomCraft);
+
+        if (e.getRawSlot() == OPTIONS_INVENTORY_CASE) {
             Inventory inventory = inventoryInitService.optionsInventory(player, prepareCustomCraft.getRecipeType());
             player.openInventory(inventory);
         }
 
-        if (e.getSlot() == VALID_INVENTORY_CASE) {
-            // Craft order
-            ArrayList<ItemStack> craftCaseOrderRecipe = new ArrayList<>();
-            CRAFT_CASES.forEach(integer -> craftCaseOrderRecipe.add(e.getInventory().getItem(integer)));
-            prepareCustomCraft.setCraftCaseOrderRecipe(craftCaseOrderRecipe);
-
-            ItemStack craftResult = e.getInventory().getItem(RESULT_CRAFT_CASE);
-            if (craftResult == null) {
+        if (e.getRawSlot() == VALID_INVENTORY_CASE) {
+            if (prepareCustomCraft.getCraftResult() == null) {
                 ItemStack itemStack = e.getInventory().getItem(VALID_INVENTORY_CASE);
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setLore(Collections.singletonList(CustomCraft.getTranslationConfig().getSerializable().getMissingCraftItem()));
@@ -147,9 +135,25 @@ public class InventoryClickEventListener implements Listener {
 
             // TODO : Cancel before add craft if one case have more than 1 item (technical limitation)
 
-            prepareCustomCraft.setCraftResult(craftResult);
             addNewRecipe(player, prepareCustomCraft);
         }
+    }
+
+    private void saveIntoPrepareCustomCraft(InventoryClickEvent e, PrepareCustomCraft prepareCustomCraft) {
+        Player player = (Player) e.getView().getPlayer();
+
+        // Craft order list
+        ArrayList<ItemStack> craftCaseOrderRecipe = new ArrayList<>();
+        CRAFT_CASES.forEach(integer -> {
+            craftCaseOrderRecipe.add(e.getInventory().getItem(integer));
+        });
+        prepareCustomCraft.setCraftCaseOrderRecipe(craftCaseOrderRecipe);
+
+        // Craft item result
+        ItemStack craftResult = e.getInventory().getItem(RESULT_CRAFT_CASE);
+        prepareCustomCraft.setCraftResult(craftResult);
+
+        customCraft.addTmpData(player.getUniqueId(), prepareCustomCraft);
     }
 
     private void addNewRecipe(Player player, PrepareCustomCraft prepareCustomCraft) {
