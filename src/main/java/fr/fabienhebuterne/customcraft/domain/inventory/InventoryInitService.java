@@ -1,6 +1,8 @@
-package fr.fabienhebuterne.customcraft.domain;
+package fr.fabienhebuterne.customcraft.domain.inventory;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
+import fr.fabienhebuterne.customcraft.domain.recipe.RecipeType;
 import fr.fabienhebuterne.customcraft.utils.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.IntStream;
+
+import static fr.fabienhebuterne.customcraft.CustomCraft.PLUGIN_NAME;
 
 public class InventoryInitService {
 
@@ -31,14 +35,12 @@ public class InventoryInitService {
         Inventory inventory = Bukkit.createInventory(
                 player,
                 9,
-                this.customCraft.getName() + " - " + "Recipe type"
+                PLUGIN_NAME + " - " + "Recipe type"
         );
 
         ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         IntStream.range(2, 9)
-                .forEach(value -> {
-                    inventory.setItem(value, itemStack);
-                });
+                .forEach(value -> inventory.setItem(value, itemStack));
 
         Arrays.stream(RecipeType.values()).forEach(recipeType -> {
             inventory.setItem(recipeType.getInvIndex(), recipeType.getItemStack());
@@ -51,7 +53,7 @@ public class InventoryInitService {
         Inventory inventory = Bukkit.createInventory(
                 player,
                 InventoryType.CHEST,
-                this.customCraft.getName() + " - " + prepareCustomCraft.getRecipeType().getNameType()
+                PLUGIN_NAME + " - " + prepareCustomCraft.getRecipeType().getNameType()
         );
 
         ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -74,41 +76,43 @@ public class InventoryInitService {
         return inventory;
     }
 
-    public Inventory optionsInventory(Player player, RecipeType recipeType) {
+    public Inventory optionsInventory(Player player, PrepareCustomCraft prepareCustomCraft) {
         Inventory inventory = Bukkit.createInventory(
                 player,
                 9,
-                this.customCraft.getName() + " - " + "Options"
+                PLUGIN_NAME + " - " + "Settings"
         );
 
         // TODO : Using options with ENUM and link with each recipe type
-        ItemStack toggleBlockPlace = new ItemStack(Material.DIRT);
-        ItemStackUtils.setName(toggleBlockPlace, "§6Toggle block place");
+        ItemStackUtils toggleBlockPlace = new ItemStackUtils(Material.DIRT);
+        toggleBlockPlace.setName(customCraft.getTranslationConfig().getToggleBlockPlace());
+        toggleBlockPlace.setOptionLore(prepareCustomCraft.getOptionItemStackConfig().isBlockCanBePlaced());
         inventory.setItem(0, toggleBlockPlace);
 
-        ItemStack toggleHighlight = new ItemStack(Material.SANDSTONE);
-        ItemStackUtils.setName(toggleHighlight, "§6Toggle highlight item");
+        ItemStackUtils toggleHighlight = new ItemStackUtils(Material.SANDSTONE);
+        toggleHighlight.setName(customCraft.getTranslationConfig().getToggleHighlight());
+        toggleHighlight.setOptionLore(prepareCustomCraft.getHighlightItem());
         toggleHighlight.addEnchantment(this.customCraft.customCraftEnchantment, 1);
         inventory.setItem(1, toggleHighlight);
 
-        ItemStack leaveInventory = new ItemStack(Material.RED_GLAZED_TERRACOTTA);
-        ItemStackUtils.setName(leaveInventory, "§cRevenir au menu précédent");
+        ItemStackUtils leaveInventory = new ItemStackUtils(Material.RED_GLAZED_TERRACOTTA);
+        leaveInventory.setName(customCraft.getTranslationConfig().getBackToPreviousMenu());
         inventory.setItem(QUIT_INVENTORY_CASE, leaveInventory);
 
         return inventory;
     }
 
     private void setValidatorsInventory(Inventory inventory) {
-        ItemStack leaveInventory = new ItemStack(Material.RED_GLAZED_TERRACOTTA);
-        ItemStackUtils.setName(leaveInventory, "§cAnnuler");
+        ItemStackUtils leaveInventory = new ItemStackUtils(Material.RED_GLAZED_TERRACOTTA);
+        leaveInventory.setName(customCraft.getTranslationConfig().getCancel());
         inventory.setItem(QUIT_INVENTORY_CASE, leaveInventory);
 
-        ItemStack optionsInventory = new ItemStack(Material.YELLOW_GLAZED_TERRACOTTA);
-        ItemStackUtils.setName(optionsInventory, "§eOptions");
-        inventory.setItem(OPTIONS_INVENTORY_CASE, optionsInventory);
+        ItemStackUtils settingsInventory = new ItemStackUtils(Material.YELLOW_GLAZED_TERRACOTTA);
+        settingsInventory.setName(customCraft.getTranslationConfig().getSettings());
+        inventory.setItem(OPTIONS_INVENTORY_CASE, settingsInventory);
 
-        ItemStack validInventory = new ItemStack(Material.GREEN_GLAZED_TERRACOTTA);
-        ItemStackUtils.setName(validInventory, "§aValider");
+        ItemStackUtils validInventory = new ItemStackUtils(Material.GREEN_GLAZED_TERRACOTTA);
+        validInventory.setName(customCraft.getTranslationConfig().getValidate());
         inventory.setItem(VALID_INVENTORY_CASE, validInventory);
     }
 

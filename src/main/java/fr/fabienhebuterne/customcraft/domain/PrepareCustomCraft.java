@@ -1,6 +1,7 @@
 package fr.fabienhebuterne.customcraft.domain;
 
 import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
+import fr.fabienhebuterne.customcraft.domain.recipe.RecipeType;
 import lombok.Data;
 import org.bukkit.inventory.ItemStack;
 

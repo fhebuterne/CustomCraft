@@ -2,10 +2,10 @@ package fr.fabienhebuterne.customcraft.commands;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommand;
-import fr.fabienhebuterne.customcraft.domain.InventoryInitService;
 import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
 import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
 import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
+import fr.fabienhebuterne.customcraft.domain.inventory.InventoryInitService;
 import fr.fabienhebuterne.customcraft.exceptions.BadArgumentsException;
 import fr.fabienhebuterne.customcraft.exceptions.CustomCraftAlreadyExistException;
 import fr.fabienhebuterne.customcraft.exceptions.OnlyPlayerCommandException;

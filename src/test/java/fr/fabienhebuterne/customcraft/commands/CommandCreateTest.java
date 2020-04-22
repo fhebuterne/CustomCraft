@@ -51,7 +51,6 @@ public class CommandCreateTest {
 
         CommandCreate commandCreate = new CommandCreate();
         commandCreate.setInstance(customCraft);
-        given(customCraft.getName()).willReturn("CustomCraft");
 
         Inventory inventoryMock = mock(Inventory.class);
         given(Bukkit.createInventory(playerMock, 9, "CustomCraft - Recipe type")).willReturn(inventoryMock);

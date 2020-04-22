@@ -2,7 +2,7 @@ package fr.fabienhebuterne.customcraft.commands;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommand;
-import fr.fabienhebuterne.customcraft.domain.RecipeService;
+import fr.fabienhebuterne.customcraft.domain.recipe.RecipeLoadService;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -15,6 +15,8 @@ import org.bukkit.inventory.ShapelessRecipe;
 
 import java.io.IOException;
 import java.util.Iterator;
+
+import static fr.fabienhebuterne.customcraft.CustomCraft.PLUGIN_NAME;
 
 public class CommandReload extends CallCommand<CustomCraft> {
 
@@ -39,23 +41,23 @@ public class CommandReload extends CallCommand<CustomCraft> {
             recipe = recipeIterator.next();
             if (recipe instanceof ShapedRecipe) {
                 ShapedRecipe shapedRecipe = (ShapedRecipe) recipe;
-                if (shapedRecipe.getKey().getNamespace().contains("customcraft")) {
+                if (shapedRecipe.getKey().getNamespace().contains(PLUGIN_NAME.toLowerCase())) {
                     recipeIterator.remove();
                 }
             }
             if (recipe instanceof ShapelessRecipe) {
                 ShapelessRecipe shapelessRecipe = (ShapelessRecipe) recipe;
-                if (shapelessRecipe.getKey().getNamespace().contains("customcraft")) {
+                if (shapelessRecipe.getKey().getNamespace().contains(PLUGIN_NAME.toLowerCase())) {
                     recipeIterator.remove();
                 }
             }
         }
-        new RecipeService(instance).loadCustomRecipe();
+        new RecipeLoadService(instance).loadCustomRecipe();
         Bukkit.getOnlinePlayers()
                 .stream()
-                .filter(o -> o.getOpenInventory().getTitle().contains("CustomCraft"))
+                .filter(o -> o.getOpenInventory().getTitle().contains(PLUGIN_NAME))
                 .forEach(HumanEntity::closeInventory);
-        commandSender.sendMessage(CustomCraft.getTranslationConfig().getSerializable().getReload());
+        commandSender.sendMessage(instance.getTranslationConfig().getReload());
     }
 
 

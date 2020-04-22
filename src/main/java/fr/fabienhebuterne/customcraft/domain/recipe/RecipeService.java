@@ -1,6 +1,7 @@
-package fr.fabienhebuterne.customcraft.domain;
+package fr.fabienhebuterne.customcraft.domain.recipe;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
+import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
 import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
 import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
 import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
@@ -105,7 +106,7 @@ public class RecipeService {
 
             this.customCraft.getCustomCraftConfig().save(customcraft);
         } catch (IllegalStateException e) {
-            player.sendMessage("§cErreur : Cette recette est déjà présente !");
+            player.sendMessage(this.customCraft.getTranslationConfig().getRecipeAlreadyExist());
         }
     }
 
@@ -124,58 +125,6 @@ public class RecipeService {
         String[] splitCompleteRow = completeRow.split("(?<=\\G...)");
 
         return new ArrayList<>(Arrays.asList(splitCompleteRow));
-    }
-
-
-    // TODO : Create other service to load all recipes
-    public void loadCustomRecipe() {
-        CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig().getSerializable();
-
-        if (customcraft == null) {
-            return;
-        }
-
-        customcraft.getRecipes()
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(recipeConfig -> {
-                    if (recipeConfig.getRecipeType() == RecipeType.SHAPED_RECIPE) {
-                        loadShapedRecipe(recipeConfig);
-                    }
-
-                    if (recipeConfig.getRecipeType() == RecipeType.SHAPELESS_RECIPE) {
-                        loadShapelessRecipe(recipeConfig);
-                    }
-                });
-    }
-
-    private void loadShapedRecipe(RecipeConfig recipeConfig) {
-        ShapedRecipe shapedRecipe = new ShapedRecipe(
-                new NamespacedKey(this.customCraft, recipeConfig.getCraftName()),
-                recipeConfig.getItemToCraft()
-        );
-        List<String> grid = recipeConfig.getGrid();
-        shapedRecipe.shape(grid.get(0), grid.get(1), grid.get(2));
-        recipeConfig.getGridSequence().forEach(
-                (integer, itemStack) -> shapedRecipe.setIngredient(
-                        integer.toString().charAt(0),
-                        new RecipeChoice.ExactChoice(itemStack)
-                )
-        );
-        this.customCraft.getServer().addRecipe(shapedRecipe);
-    }
-
-    private void loadShapelessRecipe(RecipeConfig recipeConfig) {
-        ShapelessRecipe shapedRecipe = new ShapelessRecipe(
-                new NamespacedKey(this.customCraft, recipeConfig.getCraftName()),
-                recipeConfig.getItemToCraft()
-        );
-        recipeConfig.getGridSequence().forEach(
-                (integer, itemStack) -> shapedRecipe.addIngredient(
-                        new RecipeChoice.ExactChoice(itemStack)
-                )
-        );
-        this.customCraft.getServer().addRecipe(shapedRecipe);
     }
 
 }

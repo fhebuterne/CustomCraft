@@ -16,8 +16,7 @@ public class OptionItemStackConfig implements ConfigurationSerializable {
     public void setBlockCanBePlaced(boolean blockCanBePlaced) {
         this.blockCanBePlaced = blockCanBePlaced;
     }
-
-    @Override
+    
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
         map.put("blockCanBePlaced", blockCanBePlaced);

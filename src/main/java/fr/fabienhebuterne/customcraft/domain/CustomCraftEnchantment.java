@@ -5,6 +5,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
 
+import static fr.fabienhebuterne.customcraft.CustomCraft.PLUGIN_NAME;
+
 public class CustomCraftEnchantment extends Enchantment {
     public CustomCraftEnchantment(NamespacedKey key) {
         super(key);
@@ -12,7 +14,7 @@ public class CustomCraftEnchantment extends Enchantment {
 
     @Override
     public String getName() {
-        return "CustomCraft";
+        return PLUGIN_NAME;
     }
 
     @Override

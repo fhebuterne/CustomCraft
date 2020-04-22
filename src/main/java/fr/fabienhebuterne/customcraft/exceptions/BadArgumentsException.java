@@ -8,7 +8,7 @@ import java.text.MessageFormat;
 public class BadArgumentsException extends CustomException {
 
     public BadArgumentsException(CommandSender sender, String commandHelp) {
-        String translation = CustomCraft.getTranslationConfig().getSerializable().getUsageCommand();
+        String translation = CustomCraft.getStaticTranslationConfig().getUsageCommand();
         sender.sendMessage(MessageFormat.format(translation, commandHelp));
     }
 

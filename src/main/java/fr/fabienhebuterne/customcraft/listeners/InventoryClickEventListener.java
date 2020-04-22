@@ -1,11 +1,12 @@
 package fr.fabienhebuterne.customcraft.listeners;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
-import fr.fabienhebuterne.customcraft.domain.InventoryInitService;
 import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
-import fr.fabienhebuterne.customcraft.domain.RecipeService;
-import fr.fabienhebuterne.customcraft.domain.RecipeType;
 import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
+import fr.fabienhebuterne.customcraft.domain.inventory.InventoryInitService;
+import fr.fabienhebuterne.customcraft.domain.recipe.RecipeService;
+import fr.fabienhebuterne.customcraft.domain.recipe.RecipeType;
+import fr.fabienhebuterne.customcraft.utils.ItemStackUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static fr.fabienhebuterne.customcraft.domain.InventoryInitService.*;
+import static fr.fabienhebuterne.customcraft.CustomCraft.PLUGIN_NAME;
+import static fr.fabienhebuterne.customcraft.domain.inventory.InventoryInitService.*;
 
 public class InventoryClickEventListener implements Listener {
 
@@ -34,24 +36,24 @@ public class InventoryClickEventListener implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent e) {
-        if (!e.getView().getTitle().contains("CustomCraft")) {
+        if (!e.getView().getTitle().contains(PLUGIN_NAME)) {
             return;
         }
 
         Player player = (Player) e.getView().getPlayer();
         PrepareCustomCraft prepareCustomCraft = customCraft.getTmpData().get(player.getUniqueId());
 
-        if (e.getView().getTitle().equals("CustomCraft - Options")) {
+        if (e.getView().getTitle().equals(PLUGIN_NAME + " - " + "Settings")) {
             this.chooseOptions(e, prepareCustomCraft);
             return;
         }
 
         if (prepareCustomCraft.getRecipeType() == null) {
-            if (e.getView().getTitle().equalsIgnoreCase("CustomCraft - Recipe type")) {
+            if (e.getView().getTitle().equalsIgnoreCase(PLUGIN_NAME + " - " + "Recipe type")) {
                 this.chooseCraftType(e, prepareCustomCraft);
             }
         } else {
-            if (e.getView().getTitle().equalsIgnoreCase("CustomCraft - " + prepareCustomCraft.getRecipeType().getNameType())) {
+            if (e.getView().getTitle().equalsIgnoreCase(PLUGIN_NAME + " - " + prepareCustomCraft.getRecipeType().getNameType())) {
                 this.createCraftFromShapedOrShapelessRecipe(e, prepareCustomCraft);
             }
         }
@@ -63,17 +65,29 @@ public class InventoryClickEventListener implements Listener {
 
         Player player = (Player) e.getView().getPlayer();
 
-        if (e.getSlot() == 0) {
+        ItemStack currentItem = e.getCurrentItem();
+
+        if (currentItem == null) {
+            return;
+        }
+
+        if (e.getRawSlot() == 0) {
             OptionItemStackConfig optionItemStackConfig = prepareCustomCraft.getOptionItemStackConfig();
             optionItemStackConfig.setBlockCanBePlaced(!optionItemStackConfig.isBlockCanBePlaced());
             prepareCustomCraft.setOptionItemStackConfig(optionItemStackConfig);
+
+            ItemStackUtils.setOptionLore(currentItem, optionItemStackConfig.isBlockCanBePlaced());
+            e.getInventory().setItem(e.getRawSlot(), currentItem);
         }
 
-        if (e.getSlot() == 1) {
+        if (e.getRawSlot() == 1) {
             prepareCustomCraft.setHighlightItem(!prepareCustomCraft.getHighlightItem());
+
+            ItemStackUtils.setOptionLore(currentItem, prepareCustomCraft.getHighlightItem());
+            e.getInventory().setItem(e.getRawSlot(), currentItem);
         }
 
-        if (e.getSlot() == QUIT_INVENTORY_CASE) {
+        if (e.getRawSlot() == QUIT_INVENTORY_CASE) {
             Inventory craftShapedOrShapelessRecipeInventory = this.inventoryInitService.createCraftShapedOrShapelessRecipeInventory(player, prepareCustomCraft);
             player.openInventory(craftShapedOrShapelessRecipeInventory);
         }
@@ -119,7 +133,7 @@ public class InventoryClickEventListener implements Listener {
         saveIntoPrepareCustomCraft(e, prepareCustomCraft);
 
         if (e.getRawSlot() == OPTIONS_INVENTORY_CASE) {
-            Inventory inventory = inventoryInitService.optionsInventory(player, prepareCustomCraft.getRecipeType());
+            Inventory inventory = inventoryInitService.optionsInventory(player, prepareCustomCraft);
             player.openInventory(inventory);
         }
 
@@ -127,7 +141,7 @@ public class InventoryClickEventListener implements Listener {
             if (prepareCustomCraft.getCraftResult() == null) {
                 ItemStack itemStack = e.getInventory().getItem(VALID_INVENTORY_CASE);
                 ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setLore(Collections.singletonList(CustomCraft.getTranslationConfig().getSerializable().getMissingCraftItem()));
+                itemMeta.setLore(Collections.singletonList(customCraft.getTranslationConfig().getMissingCraftItem()));
                 itemStack.setItemMeta(itemMeta);
                 e.getInventory().setItem(VALID_INVENTORY_CASE, itemStack);
                 return;
@@ -169,7 +183,7 @@ public class InventoryClickEventListener implements Listener {
         // Add hidden enchant to keep highlight item in chest or with other plugins
         if (prepareCustomCraft.getHighlightItem()) {
             ItemStack craftResult = prepareCustomCraft.getCraftResult();
-            craftResult.addEnchantment(this.customCraft.customCraftEnchantment, 1);
+            craftResult.addUnsafeEnchantment(this.customCraft.customCraftEnchantment, 1);
             prepareCustomCraft.setCraftResult(craftResult);
         }
 

@@ -1,4 +1,4 @@
-package fr.fabienhebuterne.customcraft.domain;
+package fr.fabienhebuterne.customcraft.domain.recipe;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

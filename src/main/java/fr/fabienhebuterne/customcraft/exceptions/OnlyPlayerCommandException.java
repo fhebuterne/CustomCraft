@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 public class OnlyPlayerCommandException extends CustomException {
 
     public OnlyPlayerCommandException(CommandSender sender) {
-        sender.sendMessage(CustomCraft.getTranslationConfig().getSerializable().getOnlyPlayerCommand());
+        sender.sendMessage(CustomCraft.getStaticTranslationConfig().getOnlyPlayerCommand());
     }
 
 }
