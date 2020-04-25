@@ -3,36 +3,24 @@ package fr.fabienhebuterne.customcraft;
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommandFactoryInit;
 import fr.fabienhebuterne.customcraft.domain.CustomCraftEnchantment;
 import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
-import fr.fabienhebuterne.customcraft.domain.config.*;
+import fr.fabienhebuterne.customcraft.domain.config.ConfigService;
+import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
+import fr.fabienhebuterne.customcraft.domain.config.DefaultConfig;
+import fr.fabienhebuterne.customcraft.domain.config.TranslationConfig;
 import fr.fabienhebuterne.customcraft.domain.recipe.RecipeLoadService;
 import fr.fabienhebuterne.customcraft.listeners.InventoryClickEventListener;
 import fr.fabienhebuterne.customcraft.listeners.PlayerInteractEventListener;
+import fr.fabienhebuterne.customcraft.nms.BaseReflection;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class CustomCraft extends JavaPlugin {
-
-    // TODO : Find a solution to register without write new line to each file ...
-    static {
-        ConfigurationSerialization.registerClass(CustomCraftConfig.class, "CustomCraftConfig");
-        ConfigurationSerialization.registerClass(RecipeConfig.class, "ShapedRecipeConfig");
-        ConfigurationSerialization.registerClass(OptionItemStackConfig.class, "OptionItemStackConfig");
-        ConfigurationSerialization.registerClass(DefaultConfig.class, "DefaultConfig");
-        ConfigurationSerialization.registerClass(TranslationConfig.class, "TranslationConfig");
-        ConfigurationSerialization.registerClass(ItemStack.class, "ItemStack");
-        ConfigurationSerialization.registerClass(ItemMeta.class, "ItemMeta");
-    }
 
     private CallCommandFactoryInit<CustomCraft> callCommandFactoryInit;
     private ConfigService<CustomCraftConfig> customCraftConfig;
@@ -53,7 +41,7 @@ public class CustomCraft extends JavaPlugin {
     @Override
     public void onEnable() {
         customCraftEnchantment = new CustomCraftEnchantment(new NamespacedKey(this, PLUGIN_NAME));
-        this.enchantmentRegistration();
+        BaseReflection.enchantmentRegistration(customCraftEnchantment);
 
         // TODO : Add brigadier lib to implement command autocompletion in game
         try {
@@ -69,27 +57,15 @@ public class CustomCraft extends JavaPlugin {
     }
 
     public void loadAllConfig() throws IOException {
-        customCraftConfig = new ConfigService<>(this, "customcraft", "customcraft", CustomCraftConfig.class);
+        customCraftConfig = new ConfigService<>(this, "customcraft", CustomCraftConfig.class);
         customCraftConfig.createOrLoadConfig(false);
 
-        /*ItemStack itemStack = new ItemStack(Material.ACACIA_LOG);
-        itemStack.addUnsafeEnchantment(customCraftEnchantment, 1);
-
-        RecipeConfig recipeConfig = new RecipeConfig();
-        recipeConfig.setItemToCraft(itemStack);
-
-        CustomCraftConfig customCraftConfig = new CustomCraftConfig();
-        customCraftConfig.addRecipe(recipeConfig);
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(gson.toJson(customCraftConfig));*/
-
-        defaultConfig = new ConfigService<>(this, "config", "configTest", DefaultConfig.class);
+        defaultConfig = new ConfigService<>(this, "config", DefaultConfig.class);
         defaultConfig.createOrLoadConfig(true);
 
         String language = defaultConfig.getSerializable().getLanguage();
 
-        translationConfig = new ConfigService<>(this, "translation-" + language, "translation", TranslationConfig.class);
+        translationConfig = new ConfigService<>(this, "translation-" + language, TranslationConfig.class);
         translationConfig.createOrLoadConfig(true);
     }
 
@@ -135,18 +111,5 @@ public class CustomCraft extends JavaPlugin {
 
     public ConfigService<DefaultConfig> getDefaultConfig() {
         return defaultConfig;
-    }
-
-    private void enchantmentRegistration() {
-        try {
-            Field acceptNewEnchantement = Enchantment.class.getDeclaredField("acceptingNew");
-            acceptNewEnchantement.setAccessible(true);
-            acceptNewEnchantement.set(null, true);
-            Enchantment.registerEnchantment(this.customCraftEnchantment);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            Enchantment.stopAcceptingRegistrations();
-        }
     }
 }

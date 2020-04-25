@@ -1,61 +1,63 @@
 package fr.fabienhebuterne.customcraft.domain.config;
 
+import com.google.common.base.Charsets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import fr.fabienhebuterne.customcraft.CustomCraft;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import fr.fabienhebuterne.customcraft.json.ItemStackAdapter;
+import fr.fabienhebuterne.customcraft.json.ItemStackMapKeyAdapter;
+import fr.fabienhebuterne.customcraft.json.ItemStackMapValueAdapter;
+import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.HashMap;
 
-public class ConfigService<T extends ConfigurationSerializable> {
+public class ConfigService<T> {
 
     private File configFile;
-    private FileConfiguration configFileConfiguration;
     private String fileName;
     private CustomCraft instance;
-    private String pathSerialization;
     private Class<T> clazzSerialization;
+    private T entity;
+    private Gson gson;
 
     public ConfigService(CustomCraft instance,
                          String fileName,
-                         String pathSerialization,
                          Class<T> clazzSerialization) {
         this.instance = instance;
         this.fileName = fileName;
-        this.pathSerialization = pathSerialization;
         this.clazzSerialization = clazzSerialization;
+        this.gson = new GsonBuilder()
+                .enableComplexMapKeySerialization()
+                .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+                .registerTypeAdapter(HashMap.class, new ItemStackMapValueAdapter())
+                .registerTypeAdapter(HashMap.class, new ItemStackMapKeyAdapter())
+                .setPrettyPrinting()
+                .create();
     }
 
     public void createOrLoadConfig(boolean copyFromRessource) throws IOException {
-        configFile = new File(this.instance.getDataFolder(), this.fileName + ".yml");
+        configFile = new File(this.instance.getDataFolder(), this.fileName + ".json");
 
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
             if (copyFromRessource) {
-                this.instance.saveResource(fileName + ".yml", false);
+                this.instance.saveResource(fileName + ".json", false);
             } else {
                 configFile.createNewFile();
             }
         }
 
-        configFileConfiguration = new YamlConfiguration();
         try {
-            configFileConfiguration.load(configFile);
-        } catch (IOException | InvalidConfigurationException e) {
+            InputStreamReader fileReader = new InputStreamReader(new FileInputStream(configFile), Charsets.UTF_8);
+            this.entity = gson.fromJson(fileReader, clazzSerialization);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public FileConfiguration getFileConfig() {
-        return this.configFileConfiguration;
-    }
-
     public T getSerializable() {
-        T serializable = configFileConfiguration.getSerializable(this.pathSerialization, this.clazzSerialization);
-
-        if (serializable == null) {
+        if (this.entity == null) {
             try {
                 return clazzSerialization.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
@@ -63,13 +65,15 @@ public class ConfigService<T extends ConfigurationSerializable> {
             }
         }
 
-        return serializable;
+        return this.entity;
     }
 
-    public void save(Object object) {
+    public void save(T object) {
         try {
-            configFileConfiguration.set(this.pathSerialization, object);
-            configFileConfiguration.save(configFile);
+            FileWriter fileWriter = new FileWriter(configFile);
+            gson.toJson(object, fileWriter);
+            fileWriter.flush();
+            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

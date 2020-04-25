@@ -49,10 +49,12 @@ public class RecipeLoadService {
         List<String> grid = recipeConfig.getGrid();
         shapedRecipe.shape(grid.get(0), grid.get(1), grid.get(2));
         recipeConfig.getGridSequence().forEach(
-                (integer, itemStack) -> shapedRecipe.setIngredient(
-                        integer.toString().charAt(0),
-                        new RecipeChoice.ExactChoice(itemStack)
-                )
+                (integer, itemStack) -> {
+                    shapedRecipe.setIngredient(
+                            String.valueOf(integer).charAt(0),
+                            new RecipeChoice.ExactChoice(itemStack)
+                    );
+                }
         );
         this.customCraft.getServer().addRecipe(shapedRecipe);
     }
