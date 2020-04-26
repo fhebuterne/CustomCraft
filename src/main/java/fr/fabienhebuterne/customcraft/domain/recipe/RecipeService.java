@@ -10,6 +10,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,6 +104,9 @@ public class RecipeService {
             HashMap<ItemStack, OptionItemStackConfig> optionItemStackHashMap = customcraft.getOptionItemStack();
             optionItemStackHashMap.put(recipeConfig.getItemToCraft(), optionItemStackConfig);
             customcraft.setOptionItemStack(optionItemStackHashMap);
+
+            String addNewCraftTranslation = this.customCraft.getTranslationConfig().getAddCraft();
+            player.sendMessage(MessageFormat.format(addNewCraftTranslation, recipeConfig.getCraftName()));
 
             this.customCraft.getCustomCraftConfig().save(customcraft);
         } catch (IllegalStateException e) {

@@ -28,6 +28,7 @@ public class CustomCraft extends JavaPlugin {
     private static ConfigService<TranslationConfig> translationConfig;
 
     // Used between inventory navigation to keep data before validation
+    // TODO : Maybe HashMap<UUID, HashMap<ActionType, T>> tmpData ?
     private HashMap<UUID, PrepareCustomCraft> tmpData = new HashMap<>();
 
     public CustomCraftEnchantment customCraftEnchantment;

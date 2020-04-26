@@ -37,6 +37,7 @@ public class CommandReload extends CallCommand<CustomCraft> {
         instance.loadAllConfig();
         Iterator<Recipe> recipeIterator = Bukkit.getServer().recipeIterator();
         Recipe recipe;
+        // TODO : Use stream to iterate on it
         while(recipeIterator.hasNext()) {
             recipe = recipeIterator.next();
             if (recipe instanceof ShapedRecipe) {
@@ -59,6 +60,8 @@ public class CommandReload extends CallCommand<CustomCraft> {
                 .forEach(HumanEntity::closeInventory);
         commandSender.sendMessage(instance.getTranslationConfig().getReload());
     }
+
+
 
 
 }

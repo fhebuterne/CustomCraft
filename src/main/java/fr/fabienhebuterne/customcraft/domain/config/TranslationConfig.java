@@ -19,5 +19,7 @@ public class TranslationConfig {
     private String statusEnabled;
     private String statusDisabled;
     private String recipeAlreadyExist;
+    private String addCraft;
+    private String deleteCraft;
 
 }

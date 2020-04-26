@@ -2,6 +2,7 @@ package fr.fabienhebuterne.customcraft.domain.inventory;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
 import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
+import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
 import fr.fabienhebuterne.customcraft.domain.recipe.RecipeType;
 import fr.fabienhebuterne.customcraft.utils.ItemStackUtils;
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static fr.fabienhebuterne.customcraft.CustomCraft.PLUGIN_NAME;
@@ -72,6 +74,19 @@ public class InventoryInitService {
         }
 
         setValidatorsInventory(inventory);
+
+        return inventory;
+    }
+
+    public Inventory deleteInventory(Player player, List<RecipeConfig> recipeConfigs) {
+        Inventory inventory = Bukkit.createInventory(
+                player,
+                InventoryType.CHEST,
+                PLUGIN_NAME + " - " + "Delete"
+        );
+
+        IntStream.range(0, recipeConfigs.size())
+                .forEach(index -> inventory.setItem(index, recipeConfigs.get(index).getItemToCraft()));
 
         return inventory;
     }

@@ -11,5 +11,7 @@
   "toggleHighlight": "§6Toggle highlight item",
   "statusEnabled": "§6Status: §aEnabled",
   "statusDisabled": "§6Status: §cDisabled",
-  "recipeAlreadyExist": "§cThis recipe already exist !"
+  "recipeAlreadyExist": "§cThis recipe already exist !",
+  "addCraft": "§aYou just added a craft : {0}",
+  "deleteCraft": "§aYou just removed a craft : {0}"
 }

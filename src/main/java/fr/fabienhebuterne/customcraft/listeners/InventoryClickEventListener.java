@@ -2,11 +2,14 @@ package fr.fabienhebuterne.customcraft.listeners;
 
 import fr.fabienhebuterne.customcraft.CustomCraft;
 import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
+import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
 import fr.fabienhebuterne.customcraft.domain.config.OptionItemStackConfig;
+import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
 import fr.fabienhebuterne.customcraft.domain.inventory.InventoryInitService;
 import fr.fabienhebuterne.customcraft.domain.recipe.RecipeService;
 import fr.fabienhebuterne.customcraft.domain.recipe.RecipeType;
 import fr.fabienhebuterne.customcraft.utils.ItemStackUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,11 +17,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import static fr.fabienhebuterne.customcraft.CustomCraft.PLUGIN_NAME;
 import static fr.fabienhebuterne.customcraft.domain.inventory.InventoryInitService.*;
@@ -44,7 +50,12 @@ public class InventoryClickEventListener implements Listener {
         PrepareCustomCraft prepareCustomCraft = customCraft.getTmpData().get(player.getUniqueId());
 
         if (e.getView().getTitle().equals(PLUGIN_NAME + " - " + "Settings")) {
-            this.chooseOptions(e, prepareCustomCraft);
+            this.settingsInventory(e, prepareCustomCraft);
+            return;
+        }
+
+        if (e.getView().getTitle().equals(PLUGIN_NAME + " - " + "Delete")) {
+            this.deleteInventory(e);
             return;
         }
 
@@ -59,8 +70,46 @@ public class InventoryClickEventListener implements Listener {
         }
     }
 
+    private void deleteInventory(InventoryClickEvent e) {
+        e.setCancelled(true);
+        Player player = (Player) e.getView().getPlayer();
+        CustomCraftConfig customCraftConfig = this.customCraft.getCustomCraftConfig().getSerializable();
+
+        if (e.getRawSlot() < 0) {
+            return;
+        }
+
+        if (customCraftConfig.getRecipes().size() >= e.getRawSlot() + 1) {
+            RecipeConfig recipeConfig = customCraftConfig.getRecipes().get(e.getRawSlot());
+
+            String deleteCraftTranslation = this.customCraft.getTranslationConfig().getDeleteCraft();
+            player.sendMessage(MessageFormat.format(deleteCraftTranslation, recipeConfig.getCraftName()));
+
+            // TODO : Use stream and not while with iterator
+            /*ListUtils.convertIteratorToStream(this.customCraft.getServer().recipeIterator())
+                    .filter(recipe -> recipe.getResult().equals(recipeConfig.getItemToCraft()))
+                    .forEach(recipe -> {
+                        System.out.println("recipe removed : " + recipe.getResult());
+                    });*/
+
+            Recipe recipe;
+            Iterator<Recipe> recipeIterator = Bukkit.getServer().recipeIterator();
+            while(recipeIterator.hasNext()) {
+                recipe = recipeIterator.next();
+                if (recipe.getResult().equals(recipeConfig.getItemToCraft())) {
+                    recipeIterator.remove();
+                }
+            }
+
+            customCraftConfig.getRecipes().remove(e.getRawSlot());
+            customCraftConfig.getOptionItemStack().remove(recipeConfig.getItemToCraft());
+            customCraft.getCustomCraftConfig().save(customCraftConfig);
+            player.closeInventory();
+        }
+    }
+
     // TODO : Refactor chooseOption and use ENUM
-    private void chooseOptions(InventoryClickEvent e, PrepareCustomCraft prepareCustomCraft) {
+    private void settingsInventory(InventoryClickEvent e, PrepareCustomCraft prepareCustomCraft) {
         e.setCancelled(true);
 
         Player player = (Player) e.getView().getPlayer();
@@ -150,6 +199,8 @@ public class InventoryClickEventListener implements Listener {
             // TODO : Cancel before add craft if one case have more than 1 item (technical limitation)
 
             addNewRecipe(player, prepareCustomCraft);
+
+            player.closeInventory();
         }
     }
 
