@@ -69,6 +69,7 @@ public class ConfigService<T> {
     }
 
     public void save(T object) {
+        this.entity = object;
         try {
             FileWriter fileWriter = new FileWriter(configFile);
             gson.toJson(object, fileWriter);
