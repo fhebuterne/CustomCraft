@@ -15,9 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.MessageFormat;
@@ -96,8 +94,25 @@ public class InventoryClickEventListener implements Listener {
             Iterator<Recipe> recipeIterator = Bukkit.getServer().recipeIterator();
             while(recipeIterator.hasNext()) {
                 recipe = recipeIterator.next();
-                if (recipe.getResult().equals(recipeConfig.getItemToCraft())) {
-                    recipeIterator.remove();
+
+                if (recipe instanceof ShapedRecipe) {
+                    if (!((ShapedRecipe) recipe).getKey().getNamespace().equals(PLUGIN_NAME.toLowerCase())) {
+                        continue;
+                    }
+
+                    if (((ShapedRecipe) recipe).getKey().getKey().equals(recipeConfig.getCraftName())) {
+                        recipeIterator.remove();
+                    }
+                }
+
+                if (recipe instanceof ShapelessRecipe) {
+                    if (!((ShapelessRecipe) recipe).getKey().getNamespace().equals(PLUGIN_NAME.toLowerCase())) {
+                        continue;
+                    }
+
+                    if (((ShapelessRecipe) recipe).getKey().getKey().equals(recipeConfig.getCraftName())) {
+                        recipeIterator.remove();
+                    }
                 }
             }
 

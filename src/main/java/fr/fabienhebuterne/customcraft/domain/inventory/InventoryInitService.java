@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +87,24 @@ public class InventoryInitService {
         );
 
         IntStream.range(0, recipeConfigs.size())
-                .forEach(index -> inventory.setItem(index, recipeConfigs.get(index).getItemToCraft()));
+                .forEach(index -> {
+                    ItemStack itemToCraft = recipeConfigs.get(index).getItemToCraft().clone();
+                    ItemMeta itemMeta = itemToCraft.getItemMeta();
+                    if (itemMeta != null) {
+                        List<String> loreItemMeta = new ArrayList<>();
+
+                        if (itemMeta.hasLore()) {
+                            loreItemMeta = itemMeta.getLore();
+                        }
+
+                        loreItemMeta.add("");
+                        loreItemMeta.add("§aCraft name : §6§l" + recipeConfigs.get(index).getCraftName());
+                        loreItemMeta.add("");
+                        itemMeta.setLore(loreItemMeta);
+                        itemToCraft.setItemMeta(itemMeta);
+                    }
+                    inventory.setItem(index, itemToCraft);
+                });
 
         return inventory;
     }

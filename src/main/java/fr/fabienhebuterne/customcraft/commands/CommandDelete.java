@@ -22,8 +22,11 @@ public class CommandDelete extends CallCommand<CustomCraft> {
     }
 
     protected void runFromPlayer(Server server, Player player, String commandLabel, Command cmd, String[] args) {
+        // TODO : Edit & and boolean forceReload to getSerializable
+        instance.getCustomCraftConfig().loadConfig();
+
         CustomCraftConfig customCraftConfig = instance.getCustomCraftConfig().getSerializable();
-        
+
         Inventory inventory = new InventoryInitService(instance).deleteInventory(player, customCraftConfig.getRecipes());
         player.openInventory(inventory);
     }

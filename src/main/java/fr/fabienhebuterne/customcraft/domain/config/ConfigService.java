@@ -48,6 +48,10 @@ public class ConfigService<T> {
             }
         }
 
+        this.loadConfig();
+    }
+
+    public void loadConfig() {
         try {
             InputStreamReader fileReader = new InputStreamReader(new FileInputStream(configFile), Charsets.UTF_8);
             this.entity = gson.fromJson(fileReader, clazzSerialization);
