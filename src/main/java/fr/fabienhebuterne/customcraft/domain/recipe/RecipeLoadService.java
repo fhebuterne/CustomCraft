@@ -43,7 +43,7 @@ public class RecipeLoadService {
 
     private void loadShapedRecipe(RecipeConfig recipeConfig) {
         ShapedRecipe shapedRecipe = new ShapedRecipe(
-                new NamespacedKey(this.customCraft, recipeConfig.getCraftName()),
+                new NamespacedKey(this.customCraft, recipeConfig.getCraftName().toLowerCase()),
                 recipeConfig.getItemToCraft()
         );
         List<String> grid = recipeConfig.getGrid();
@@ -61,7 +61,7 @@ public class RecipeLoadService {
 
     private void loadShapelessRecipe(RecipeConfig recipeConfig) {
         ShapelessRecipe shapedRecipe = new ShapelessRecipe(
-                new NamespacedKey(this.customCraft, recipeConfig.getCraftName()),
+                new NamespacedKey(this.customCraft, recipeConfig.getCraftName().toLowerCase()),
                 recipeConfig.getItemToCraft()
         );
         recipeConfig.getGridSequence().forEach(
