@@ -63,11 +63,14 @@ public class ConfigService<T> {
     public T getSerializable() {
         if (this.entity == null) {
             try {
+                System.out.println("CustomCraft Debug getSerializable - new Instance");
                 return clazzSerialization.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
+
+        System.out.println("CustomCraft Debug getSerializable : " + this.entity);
 
         return this.entity;
     }
@@ -75,6 +78,7 @@ public class ConfigService<T> {
     public void save(T object) {
         this.entity = object;
         try {
+            System.out.println("CustomCraft Debug save : " + object);
             FileWriter fileWriter = new FileWriter(configFile);
             gson.toJson(object, fileWriter);
             fileWriter.flush();

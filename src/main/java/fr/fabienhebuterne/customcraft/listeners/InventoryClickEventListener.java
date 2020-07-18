@@ -100,7 +100,7 @@ public class InventoryClickEventListener implements Listener {
                         continue;
                     }
 
-                    if (((ShapedRecipe) recipe).getKey().getKey().equals(recipeConfig.getCraftName())) {
+                    if (((ShapedRecipe) recipe).getKey().getKey().equals(recipeConfig.getCraftName().toLowerCase())) {
                         recipeIterator.remove();
                     }
                 }
@@ -110,7 +110,7 @@ public class InventoryClickEventListener implements Listener {
                         continue;
                     }
 
-                    if (((ShapelessRecipe) recipe).getKey().getKey().equals(recipeConfig.getCraftName())) {
+                    if (((ShapelessRecipe) recipe).getKey().getKey().equals(recipeConfig.getCraftName().toLowerCase())) {
                         recipeIterator.remove();
                     }
                 }

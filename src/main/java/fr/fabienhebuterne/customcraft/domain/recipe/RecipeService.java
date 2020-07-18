@@ -28,7 +28,7 @@ public class RecipeService {
                                 PrepareCustomCraft prepareCustomCraft) {
         ArrayList<String> grid = getGrid(prepareCustomCraft.getCraftCaseOrderRecipe(), idCraftCaseRecipse);
         ShapedRecipe shapedRecipe = new ShapedRecipe(
-                new NamespacedKey(this.customCraft, prepareCustomCraft.getCraftName()),
+                new NamespacedKey(this.customCraft, prepareCustomCraft.getCraftName().toLowerCase()),
                 prepareCustomCraft.getCraftResult()
         );
 
@@ -52,7 +52,7 @@ public class RecipeService {
                                    HashMap<Integer, ItemStack> idCraftCaseRecipse,
                                    PrepareCustomCraft prepareCustomCraft) {
         ShapelessRecipe shapelessRecipe = new ShapelessRecipe(
-                new NamespacedKey(this.customCraft, prepareCustomCraft.getCraftName()),
+                new NamespacedKey(this.customCraft, prepareCustomCraft.getCraftName().toLowerCase()),
                 prepareCustomCraft.getCraftResult()
         );
 
