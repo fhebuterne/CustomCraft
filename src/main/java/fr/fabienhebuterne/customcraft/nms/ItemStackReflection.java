@@ -21,13 +21,13 @@ public class ItemStackReflection {
 
         ByteArrayOutputStream outputStream = null;
         try {
-            Class<?> nbtTagCompoundClass = getNMSClass("NBTTagCompound");
+            Class<?> nbtTagCompoundClass = getNMSClass("nbt.NBTTagCompound");
             Constructor<?> nbtTagCompoundConstructor = nbtTagCompoundClass.getConstructor();
             Object nbtTagCompound = nbtTagCompoundConstructor.newInstance();
             Object nmsItemStack = getOBClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, itemStack);
-            getNMSClass("ItemStack").getMethod("save", nbtTagCompoundClass).invoke(nmsItemStack, nbtTagCompound);
+            getNMSClass("world.item.ItemStack").getMethod("save", nbtTagCompoundClass).invoke(nmsItemStack, nbtTagCompound);
             outputStream = new ByteArrayOutputStream();
-            getNMSClass("NBTCompressedStreamTools").getMethod("a", nbtTagCompoundClass, OutputStream.class).invoke(null, nbtTagCompound, outputStream);
+            getNMSClass("nbt.NBTCompressedStreamTools").getMethod("a", nbtTagCompoundClass, OutputStream.class).invoke(null, nbtTagCompound, outputStream);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }
@@ -42,12 +42,12 @@ public class ItemStackReflection {
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(BaseEncoding.base64().decode(itemStackString));
 
-        Class<?> nbtTagCompoundClass = getNMSClass("NBTTagCompound");
-        Class<?> nmsItemStackClass = getNMSClass("ItemStack");
+        Class<?> nbtTagCompoundClass = getNMSClass("nbt.NBTTagCompound");
+        Class<?> nmsItemStackClass = getNMSClass("world.item.ItemStack");
         Object nbtTagCompound;
         ItemStack itemStack = null;
         try {
-            nbtTagCompound = getNMSClass("NBTCompressedStreamTools").getMethod("a", InputStream.class).invoke(null, inputStream);
+            nbtTagCompound = getNMSClass("nbt.NBTCompressedStreamTools").getMethod("a", InputStream.class).invoke(null, inputStream);
             Object craftItemStack = nmsItemStackClass.getMethod("a", nbtTagCompoundClass).invoke(null, nbtTagCompound);
             itemStack = (ItemStack) getOBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", nmsItemStackClass).invoke(null, craftItemStack);
         } catch (ReflectiveOperationException e) {

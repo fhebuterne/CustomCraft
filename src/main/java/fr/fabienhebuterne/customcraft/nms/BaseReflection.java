@@ -9,7 +9,7 @@ public class BaseReflection {
     public static Class<?> getNMSClass(String className) {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         String version = packageName.replace(".", ",").split(",")[3];
-        String classLocation = "net.minecraft.server." + version + "." + className;
+        String classLocation = "net.minecraft." + className;
         Class<?> nmsClass = null;
         try {
             nmsClass = Class.forName(classLocation);
