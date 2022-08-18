@@ -1,0 +1,11 @@
+name: ${rootProject.name}
+version: ${version}
+main: fr.fabienhebuterne.customcraft.CustomCraft
+author: fabien91
+website: https://fabien-hebuterne.fr/
+api-version: 1.18
+
+commands:
+  customcraft:
+    usage: /customcraft
+    description: Base command
