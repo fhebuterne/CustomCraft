@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [[ -d ./tmp ]]; then
-  echo "remove existing tmp directory"
-  rm -r ./tmp
+if [[ -d ./libs ]]; then
+  echo "remove existing libs directory"
+  rm -r ./libs
 fi
 
-mkdir ./tmp && cd ./tmp || exit
+mkdir ./libs && cd ./libs || exit
 
 # $1 : private cache ci url
 # $2 : cache ci user
