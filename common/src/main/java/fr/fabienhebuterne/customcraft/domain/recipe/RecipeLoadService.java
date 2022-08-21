@@ -3,6 +3,7 @@ package fr.fabienhebuterne.customcraft.domain.recipe;
 import fr.fabienhebuterne.customcraft.CustomCraft;
 import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
 import fr.fabienhebuterne.customcraft.domain.config.RecipeConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
@@ -12,8 +13,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class RecipeLoadService {
-
-    // TODO : Use dependency injection for customcraft instance ?
     private CustomCraft customCraft;
 
     public RecipeLoadService(CustomCraft customCraft) {
@@ -27,6 +26,7 @@ public class RecipeLoadService {
             return;
         }
 
+        Bukkit.getLogger().info("[CustomCraft] Start to load recipes");
         customcraft.getRecipes()
                 .stream()
                 .filter(Objects::nonNull)
@@ -39,6 +39,7 @@ public class RecipeLoadService {
                         loadShapelessRecipe(recipeConfig);
                     }
                 });
+        Bukkit.getLogger().info("[CustomCraft] Finish to load recipes");
     }
 
     private void loadShapedRecipe(RecipeConfig recipeConfig) {

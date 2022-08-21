@@ -29,9 +29,9 @@ public class ConfigService<T> {
         this.clazzSerialization = clazzSerialization;
         this.gson = new GsonBuilder()
                 .enableComplexMapKeySerialization()
-                .registerTypeAdapter(ItemStack.class, new ItemStackAdapter(instance.itemStackSerializer))
-                .registerTypeAdapter(HashMap.class, new ItemStackMapValueAdapter(instance.itemStackSerializer))
-                .registerTypeAdapter(HashMap.class, new ItemStackMapKeyAdapter(instance.itemStackSerializer))
+                .registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
+                .registerTypeAdapter(HashMap.class, new ItemStackMapValueAdapter())
+                .registerTypeAdapter(HashMap.class, new ItemStackMapKeyAdapter())
                 .setPrettyPrinting()
                 .create();
     }

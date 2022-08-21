@@ -1,7 +1,7 @@
 package fr.fabienhebuterne.customcraft;
 
-import fr.fabienhebuterne.customcraft.domain.CustomCraftEnchantment;
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommandFactoryInit;
+import fr.fabienhebuterne.customcraft.domain.CustomCraftEnchantment;
 import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
 import fr.fabienhebuterne.customcraft.domain.config.ConfigService;
 import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
@@ -12,9 +12,7 @@ import fr.fabienhebuterne.customcraft.listeners.InventoryClickEventListener;
 import fr.fabienhebuterne.customcraft.listeners.PlayerInteractEventListener;
 import fr.fabienhebuterne.customcraft.nms.BaseReflection;
 import fr.fabienhebuterne.customcraft.nms.ItemStackSerializer;
-import fr.fabienhebuterne.customcraft.nms.ItemStackSerializer_1_18_R2;
-import fr.fabienhebuterne.customcraft.nms.ItemStackSerializer_1_19_R1;
-import org.bukkit.Bukkit;
+import fr.fabienhebuterne.customcraft.nms.NmsLoader;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -49,7 +47,7 @@ public class CustomCraft extends JavaPlugin {
         customCraftEnchantment = new CustomCraftEnchantment(new NamespacedKey(this, PLUGIN_NAME));
         BaseReflection.enchantmentRegistration(customCraftEnchantment);
 
-        loadNms();
+        this.itemStackSerializer = NmsLoader.loadNms(this);
 
         // TODO : Add brigadier lib to implement command autocompletion in game
         try {
@@ -64,28 +62,8 @@ public class CustomCraft extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(this), this);
     }
 
-    private void loadNms() {
-        String currentVersion = Bukkit.getServer().getClass().getPackage().getName()
-                .replace(".", ",").split(",")[3];
-
-        if (currentVersion == null) {
-            Bukkit.getLogger().severe("Your server version isn't compatible with PickSpawner");
-            this.getServer().getPluginManager().disablePlugin(this);
-        }
-
-        this.itemStackSerializer = switch (currentVersion) {
-            case "v1_18_R2" -> new ItemStackSerializer_1_18_R2();
-            case "v1_19_R1" -> new ItemStackSerializer_1_19_R1();
-            default -> {
-                Bukkit.getLogger().severe("Your server version isn't compatible with CustomCraft");
-                this.getServer().getPluginManager().disablePlugin(this);
-                throw new IllegalStateException("Your server version isn't compatible with CustomCraft");
-            }
-        };
-    }
-
     public void loadAllConfig() throws IOException {
-        customCraftConfig = new ConfigService<>(this, "fr/fabienhebuterne/customcraft", CustomCraftConfig.class);
+        customCraftConfig = new ConfigService<>(this, "customcraft", CustomCraftConfig.class);
         customCraftConfig.createOrLoadConfig(false);
 
         defaultConfig = new ConfigService<>(this, "config", DefaultConfig.class);
