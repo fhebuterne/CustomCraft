@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 public class CustomCraftConfig {
 
+    private List<String> disableVanillaRecipes = new ArrayList<>();
     private List<RecipeConfig> recipes = new ArrayList<>();
 
     @JsonAdapter(ItemStackMapKeyAdapter.class)

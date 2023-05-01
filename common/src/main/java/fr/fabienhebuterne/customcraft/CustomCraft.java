@@ -57,7 +57,9 @@ public class CustomCraft extends JavaPlugin {
         }
 
         this.callCommandFactoryInit = new CallCommandFactoryInit<>(this, PLUGIN_NAME.toLowerCase());
-        new RecipeLoadService(this).loadCustomRecipe();
+        RecipeLoadService recipeLoadService = new RecipeLoadService(this);
+        recipeLoadService.loadDisableVanillaRecipes();
+        recipeLoadService.loadCustomRecipe();
         this.getServer().getPluginManager().registerEvents(new InventoryClickEventListener(this), this);
         this.getServer().getPluginManager().registerEvents(new PlayerInteractEventListener(this), this);
     }

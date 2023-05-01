@@ -97,8 +97,9 @@ public class RecipeService {
             customcraft = new CustomCraftConfig();
         }
 
-        try {
-            this.customCraft.getServer().addRecipe(recipe);
+        boolean isRecipeAdded = this.customCraft.getServer().addRecipe(recipe);
+
+        if (isRecipeAdded) {
             customcraft.addRecipe(recipeConfig);
 
             HashMap<ItemStack, OptionItemStackConfig> optionItemStackHashMap = customcraft.getOptionItemStack();
@@ -109,7 +110,7 @@ public class RecipeService {
             player.sendMessage(MessageFormat.format(addNewCraftTranslation, recipeConfig.getCraftName()));
 
             this.customCraft.getCustomCraftConfig().save(customcraft);
-        } catch (IllegalStateException e) {
+        } else {
             player.sendMessage(this.customCraft.getTranslationConfig().getRecipeAlreadyExist());
         }
     }

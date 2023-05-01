@@ -19,6 +19,14 @@ public class RecipeLoadService {
         this.customCraft = customCraft;
     }
 
+    public void loadDisableVanillaRecipes() {
+        this.customCraft.getCustomCraftConfig()
+                .getSerializable()
+                .getDisableVanillaRecipes().forEach(disableVanillaRecipe -> {
+                    this.customCraft.getServer().removeRecipe(NamespacedKey.minecraft(disableVanillaRecipe));
+                });
+    }
+
     public void loadCustomRecipe() {
         CustomCraftConfig customcraft = this.customCraft.getCustomCraftConfig().getSerializable();
 
