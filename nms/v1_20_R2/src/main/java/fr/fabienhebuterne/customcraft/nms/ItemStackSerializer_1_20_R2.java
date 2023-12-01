@@ -3,7 +3,7 @@ package fr.fabienhebuterne.customcraft.nms;
 import com.google.common.io.BaseEncoding;
 import net.minecraft.nbt.NBTCompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.ByteArrayInputStream;
