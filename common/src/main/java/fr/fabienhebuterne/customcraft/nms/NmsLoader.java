@@ -23,6 +23,7 @@ public class NmsLoader {
             case "v1_19_R3" -> new ItemStackSerializer_1_19_R3();
             case "v1_20_R1" -> new ItemStackSerializer_1_20_R1();
             case "v1_20_R2" -> new ItemStackSerializer_1_20_R2();
+            case "v1_20_R3" -> new ItemStackSerializer_1_20_R3();
             default -> {
                 Bukkit.getLogger().severe("Your server version isn't compatible with CustomCraft");
                 if (plugin != null) {
