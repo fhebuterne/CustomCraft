@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = "fr.fabienhebuterne.customcraft"
-    version = "1.5.1"
+    version = System.getProperty("tagVersion") ?: "SNAPSHOT"
 
     apply(plugin = "base")
     apply(plugin = "java")
