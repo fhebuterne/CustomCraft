@@ -2,6 +2,7 @@ package fr.fabienhebuterne.customcraft.json;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
+import fr.fabienhebuterne.customcraft.CustomCraft;
 import fr.fabienhebuterne.customcraft.nms.ItemStackSerializer;
 import fr.fabienhebuterne.customcraft.nms.NmsLoader;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +17,7 @@ public class ItemStackMapValueAdapter implements JsonSerializer<HashMap<Integer,
     private final ItemStackSerializer itemStackSerializer;
 
     public ItemStackMapValueAdapter() {
-        this.itemStackSerializer = NmsLoader.loadNms(null);
+        this.itemStackSerializer = NmsLoader.loadNms();
         this.gson = new GsonBuilder().create();
     }
 

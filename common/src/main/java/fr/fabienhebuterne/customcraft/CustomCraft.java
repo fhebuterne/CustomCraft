@@ -1,7 +1,6 @@
 package fr.fabienhebuterne.customcraft;
 
 import fr.fabienhebuterne.customcraft.commands.factory.CallCommandFactoryInit;
-import fr.fabienhebuterne.customcraft.domain.CustomCraftEnchantment;
 import fr.fabienhebuterne.customcraft.domain.PrepareCustomCraft;
 import fr.fabienhebuterne.customcraft.domain.config.ConfigService;
 import fr.fabienhebuterne.customcraft.domain.config.CustomCraftConfig;
@@ -10,12 +9,12 @@ import fr.fabienhebuterne.customcraft.domain.config.TranslationConfig;
 import fr.fabienhebuterne.customcraft.domain.recipe.RecipeLoadService;
 import fr.fabienhebuterne.customcraft.listeners.InventoryClickEventListener;
 import fr.fabienhebuterne.customcraft.listeners.PlayerInteractEventListener;
-import fr.fabienhebuterne.customcraft.nms.BaseReflection;
 import fr.fabienhebuterne.customcraft.nms.ItemStackSerializer;
 import fr.fabienhebuterne.customcraft.nms.NmsLoader;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -34,9 +33,10 @@ public class CustomCraft extends JavaPlugin {
     // TODO : Maybe HashMap<UUID, HashMap<ActionType, T>> tmpData ?
     private HashMap<UUID, PrepareCustomCraft> tmpData = new HashMap<>();
 
-    public CustomCraftEnchantment customCraftEnchantment;
+    public Enchantment customCraftEnchantment;
 
     public static final String PLUGIN_NAME = "CustomCraft";
+    public static Plugin plugin;
 
     @Override
     public void onDisable() {
@@ -44,10 +44,10 @@ public class CustomCraft extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        customCraftEnchantment = new CustomCraftEnchantment(new NamespacedKey(this, PLUGIN_NAME));
-        BaseReflection.enchantmentRegistration(customCraftEnchantment);
-
-        this.itemStackSerializer = NmsLoader.loadNms(this);
+        plugin = this;
+        this.itemStackSerializer = NmsLoader.loadNms();
+        this.itemStackSerializer.loadCustomCraftEnchantment();
+        this.customCraftEnchantment = this.itemStackSerializer.getCustomCraftEnchantment();
 
         // TODO : Add brigadier lib to implement command autocompletion in game
         try {

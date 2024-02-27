@@ -3,14 +3,24 @@ package fr.fabienhebuterne.customcraft.nms;
 import com.google.common.io.BaseEncoding;
 import net.minecraft.nbt.NBTCompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 public class ItemStackSerializer_1_19_R2 implements ItemStackSerializer {
+
+    CustomCraftEnchantment customCraftEnchantment;
+
+    ItemStackSerializer_1_19_R2(NamespacedKey namespacedKey) {
+        customCraftEnchantment = new CustomCraftEnchantment(namespacedKey);
+    }
+
     @Override
     public String serializeItemStack(ItemStack itemStack) {
         if (itemStack == null) {
@@ -49,5 +59,24 @@ public class ItemStackSerializer_1_19_R2 implements ItemStackSerializer {
         }
 
         return null;
+    }
+
+    @Override
+    public void loadCustomCraftEnchantment() {
+        try {
+            Field acceptNewEnchantement = Enchantment.class.getDeclaredField("acceptingNew");
+            acceptNewEnchantement.setAccessible(true);
+            acceptNewEnchantement.set(null, true);
+            Enchantment.registerEnchantment(customCraftEnchantment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Enchantment.stopAcceptingRegistrations();
+        }
+    }
+
+    @Override
+    public Enchantment getCustomCraftEnchantment() {
+        return customCraftEnchantment;
     }
 }
